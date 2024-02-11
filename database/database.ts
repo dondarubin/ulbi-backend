@@ -1,6 +1,8 @@
-import { IEnvironmentService } from "../services/environmentService";
-import {IDatabase} from "./IDatabase";
+import {IEnvironmentService} from "../services/environmentService";
 import postgres from "postgres";
+
+interface IDatabase {
+}
 
 export class Postgres implements IDatabase {
   private readonly database: postgres.Sql;
