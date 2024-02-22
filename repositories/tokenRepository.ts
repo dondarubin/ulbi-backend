@@ -1,16 +1,47 @@
 import {postgres} from "../index";
 import {FingerprintResult} from "express-fingerprint";
+import {tokenSchema} from "../database/models/tokenSchema";
 
 class TokenRepository {
-  static async getRefreshSession(refreshToken: string) {
+  static async createRefreshSession(refreshTokenObject: tokenSchema) {
+    const tokenDataFromDB = await postgres.getTokenDataByUserId(refreshTokenObject.user_id)
+
+    if (tokenDataFromDB.length) {
+      const updatedTokenDataFromDB = await postgres.updateTokenData(refreshTokenObject)
+      return updatedTokenDataFromDB
+    }
+
+    const createdTokenDataDB = await postgres.createRefreshSession(refreshTokenObject)
+    return createdTokenDataDB
   }
 
-  static async createRefreshSession(user_id: number, refreshToken: string, fingerprint: FingerprintResult) {
-    await postgres.createRefreshSession(user_id, refreshToken, fingerprint)
+  static async deleteRefreshSession(refresh_token: string) {
+    const deletedTokenDataDB = await postgres.deleteRefreshSession(refresh_token)
+    return deletedTokenDataDB
   }
 
-  static async deleteRefreshSession(refreshToken: string) {
+  static async getRefreshSessionDataByRefreshToken(refresh_token: string) {
+    const deletedTokenDataDB = await postgres.getTokenDataByRefreshToken(refresh_token)
+    return deletedTokenDataDB
   }
+
+  // static async getRefreshSessionData(user_id: number) {
+  //   const tokenDataFromDB = await postgres.getTokenData(user_id)
+  //   return tokenDataFromDB
+  // }
+
+  // static async updateRefreshSessionData(
+  //   user_id: number,
+  //   new_refresh_token: string,
+  //   finger_print: FingerprintResult
+  // ) {
+  //   const updatedTokenDataFromDB = await postgres.updateTokenData(
+  //     user_id,
+  //     new_refresh_token,
+  //     finger_print
+  //   )
+  //   return updatedTokenDataFromDB
+  // }
 }
 
 export default TokenRepository;

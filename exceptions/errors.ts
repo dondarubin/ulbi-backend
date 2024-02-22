@@ -1,54 +1,22 @@
-class WebError {
+import { ValidationError } from "express-validator";
+
+class ApiError extends Error {
   public status: number;
-  public error: string;
+  public errors: ValidationError[];
 
-  constructor(status: number, error: string) {
+  constructor(status: number, message: string, errors: ValidationError[] = []) {
+    super(message);
     this.status = status;
-    this.error = error;
+    this.errors = errors;
+  }
+
+  public static UnauthorizedError(){
+    return new ApiError(401, 'The user is not authorized')
+  }
+
+  public static BadRequest(message: string, errors: ValidationError[] = []){
+    return new ApiError(400, message, errors)
   }
 }
 
-export class Unprocessable extends WebError {
-  constructor(error: string) {
-    super(422, error);
-  }
-}
-
-export class Conflict extends WebError {
-  constructor(error: string) {
-    super(409, error);
-  }
-}
-
-export class NotFound extends WebError {
-  constructor(error: string) {
-    super(404, error);
-  }
-}
-
-export class Forbidden extends WebError {
-  constructor(error: string) {
-    super(403, error);
-  }
-}
-
-export class Unauthorized extends WebError {
-  constructor(error: string) {
-    super(401, error);
-  }
-}
-
-export class BadRequest extends WebError {
-  constructor(error: string) {
-    super(400, error);
-  }
-}
-
-// class ErrorUtils {
-//   static catchError(res, error) {
-//     console.log(error);
-//     return res.status(error.status || 500).json(error);
-//   }
-// }
-//
-// export default ErrorUtils;
+export default ApiError

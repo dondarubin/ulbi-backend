@@ -1,11 +1,14 @@
 import {IEnvironmentService} from "../services/environmentService";
 import postgres, {Row, RowList} from "postgres";
 import {FingerprintResult} from "express-fingerprint";
+import {tokenSchema} from "./models/tokenSchema";
 
 interface IDatabase {
-  getUserData(username: string): Promise<RowList<Row[]>>
-
-  createNewUser(username: string, password: string): Promise<RowList<Row[]>>
+  createNewUser(username: string, password: string): Promise<RowList<Row[]>>,
+  getUserDataByUsername(username: string): Promise<RowList<Row[]>>,
+  // createRefreshSession(username: string): Promise<RowList<Row[]>>,
+  // deleteRefreshSession(username: string): Promise<RowList<Row[]>>,
+  // getTokenData(username: string): Promise<RowList<Row[]>>,
 }
 
 export class Postgres implements IDatabase {
@@ -19,7 +22,15 @@ export class Postgres implements IDatabase {
     })
   }
 
-  public async getUserData(username: string) {
+  public async createNewUser(username: string, hashedPassword: string) {
+    return this.database`
+        INSERT INTO users (username, hashed_password)
+        VALUES (${username}, ${hashedPassword})
+        RETURNING *
+    `
+  }
+
+  public async getUserDataByUsername(username: string) {
     return this.database`
         SELECT *
         FROM users
@@ -27,7 +38,34 @@ export class Postgres implements IDatabase {
     `
   }
 
-  public async getTokenData(user_id: number) {
+  public async getUserDataById(user_id: number) {
+    return this.database`
+        SELECT *
+        FROM users
+        WHERE user_id = ${user_id}
+    `
+  }
+
+  public async createRefreshSession(refreshToken: tokenSchema) {
+    return this.database`
+        INSERT INTO tokens (user_id, refresh_token, finger_print)
+        VALUES (${refreshToken.user_id},
+                ${refreshToken.refresh_token},
+                ${refreshToken.finger_print.hash})
+        RETURNING *
+    `
+  }
+
+  public async deleteRefreshSession(refresh_token: string) {
+    return this.database`
+        DELETE
+        FROM tokens
+        WHERE refresh_token = ${refresh_token}
+        RETURNING refresh_token
+    `
+  }
+
+  public async getTokenDataByUserId(user_id: number) {
     return this.database`
         SELECT *
         FROM tokens
@@ -35,58 +73,28 @@ export class Postgres implements IDatabase {
     `
   }
 
-  public async createNewUser(username: string, password: string) {
+  public async getTokenDataByRefreshToken(refresh_token: string) {
     return this.database`
-        INSERT INTO users (username, password)
-        VALUES (${username}, ${password})
-        RETURNING *
+        SELECT *
+        FROM tokens
+        WHERE (refresh_token = ${refresh_token})
     `
   }
 
-  public async createRefreshSession(user_id: number, refresh_token: string, finger_print: FingerprintResult) {
+  public async updateTokenData(refreshTokenObject: tokenSchema) {
     return this.database`
-        INSERT INTO tokens (user_id, refresh_token, finger_print)
-        VALUES (${user_id}, ${refresh_token}, ${finger_print.hash})
+        UPDATE tokens
+        SET refresh_token = ${refreshTokenObject.refresh_token},
+            finger_print  = ${refreshTokenObject.finger_print.hash}
+        WHERE user_id = ${refreshTokenObject.user_id}
     `
   }
 
-
-  // public async createNewUser(user: IDBUser) {
-  //   await this.db`
-  //       INSERT INTO Users (tg_id,
-  //                          user_name,
-  //                          user_surname,
-  //                          user_age,
-  //                          user_gender,
-  //                          user_social_networks,
-  //                          user_city,
-  //                          profession,
-  //                          experience,
-  //                          description,
-  //                          useful,
-  //                          meeting_preferences)
-  //       values (${user.tgUserId},
-  //               ${user.name},
-  //               ${user.surname},
-  //               ${user.age},
-  //               ${user.gender ? "М" : "Ж"},
-  //               ${user.socialNetworks ? user.socialNetworks : null},
-  //               ${user.city},
-  //               ${user.profession},
-  //               ${user.experience},
-  //               ${user.description},
-  //               ${user.useful},
-  //               ${user.meetingPreferences ? user.meetingPreferences : null})`
-  // }
-
-  // public async addUserInterests(user: IDBUser) {
-  //   await this.db`
-  //       INSERT into usersinterests(user_id, interest_id)
-  //       SELECT u.user_id, i.interest_id
-  //       FROM Users u,
-  //            interests i
-  //       WHERE u.tg_id = ${user.tgUserId}
-  //         AND i.interest_name IN ${this.db(user.listInterests)}
+  // public async updateTokenData(user_id: number, new_refresh_token: string, finger_print: FingerprintResult) {
+  //   return this.database`
+  //       UPDATE tokens
+  //       SET refresh_token = ${new_refresh_token}
+  //       WHERE user_id = ${user_id} AND finger_print = ${finger_print.hash}
   //   `
   // }
 }
