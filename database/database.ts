@@ -1,7 +1,11 @@
 import {IEnvironmentService} from "../services/environmentService";
-import postgres from "postgres";
+import postgres, {Row, RowList} from "postgres";
+import {FingerprintResult} from "express-fingerprint";
 
 interface IDatabase {
+  getUserData(username: string): Promise<RowList<Row[]>>
+
+  createNewUser(username: string, password: string): Promise<RowList<Row[]>>
 }
 
 export class Postgres implements IDatabase {
@@ -14,6 +18,38 @@ export class Postgres implements IDatabase {
       password: this.environmentService.get(("POSTGRES_PASSWORD"))
     })
   }
+
+  public async getUserData(username: string) {
+    return this.database`
+        SELECT *
+        FROM users
+        WHERE username = ${username}
+    `
+  }
+
+  public async getTokenData(user_id: number) {
+    return this.database`
+        SELECT *
+        FROM tokens
+        WHERE (user_id = ${user_id})
+    `
+  }
+
+  public async createNewUser(username: string, password: string) {
+    return this.database`
+        INSERT INTO users (username, password)
+        VALUES (${username}, ${password})
+        RETURNING *
+    `
+  }
+
+  public async createRefreshSession(user_id: number, refresh_token: string, finger_print: FingerprintResult) {
+    return this.database`
+        INSERT INTO tokens (user_id, refresh_token, finger_print)
+        VALUES (${user_id}, ${refresh_token}, ${finger_print.hash})
+    `
+  }
+
 
   // public async createNewUser(user: IDBUser) {
   //   await this.db`
@@ -54,4 +90,5 @@ export class Postgres implements IDatabase {
   //   `
   // }
 }
+
 

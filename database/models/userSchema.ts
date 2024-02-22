@@ -1,5 +1,5 @@
 export interface UserSchema {
-  userId: number
+  user_id: number
   username: string
   password: string
 }
