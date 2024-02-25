@@ -43,4 +43,4 @@ router.post('/login',
 )
 router.post('/logout', UserController.logout)
 router.get('/refresh', UserController.refresh)
-router.get('/users', authMiddleware, UserController.refresh)
+router.get('/users', authMiddleware, UserController.getUsers)

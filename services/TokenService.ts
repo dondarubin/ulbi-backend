@@ -1,11 +1,9 @@
-import {UserSchema} from "../database/models/userSchema";
-import {NextFunction} from "express";
 import jwt from 'jsonwebtoken'
 import {environmentService} from "../index";
-import tokenRepository from "../repositories/tokenRepository";
 import UserDto from "../dtos/userDto";
 
 class TokenService {
+  // TODO изменить валидность токена на 30m | 30s
   static async generateAccessToken(payload: UserDto) {
     return jwt.sign(
       payload,
@@ -25,7 +23,8 @@ class TokenService {
   static async validateAccessToken(access_token: string) {
     try {
       const isValidAccessToken = jwt.verify(access_token, environmentService.get("ACCESS_TOKEN_SECRET"))
-      return isValidAccessToken
+      // Возвращает вшитый в токен UserDto
+      return isValidAccessToken as UserDto
     } catch (err) {
       return null
     }
@@ -34,14 +33,12 @@ class TokenService {
   static async validateRefreshToken(refresh_token: string) {
     try {
       const isValidRefreshToken = jwt.verify(refresh_token, environmentService.get("REFRESH_TOKEN_SECRET"))
-      return isValidRefreshToken
+      // Возвращает вшитый в токен UserDto
+      return isValidRefreshToken as UserDto
     } catch (err) {
       return null
     }
   }
-
-  // static async checkAccess(req: Request, _: any, next: NextFunction) {
-  // }
 }
 
 export default TokenService

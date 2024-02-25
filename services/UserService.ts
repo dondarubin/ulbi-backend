@@ -8,6 +8,7 @@ import ApiError from "../exceptions/errors";
 import tokenRepository from "../repositories/tokenRepository";
 import UserDto from "../dtos/userDto";
 import tokenService from "./TokenService";
+import {UserSchema} from "../database/models/userSchema";
 
 class UserService {
   static async register(username: string, password: string, finger_print: FingerprintResult) {
@@ -36,6 +37,7 @@ class UserService {
       accessTokenExpiration: ACCESS_TOKEN_EXPIRATION
     }
   }
+
 
   static async login(username: string, password: string, finger_print: FingerprintResult) {
     const userDataFromDB = await userRepository.getUserDataByUsername(username)
@@ -94,6 +96,7 @@ class UserService {
     }
   }
 
+
   static async logout(refresh_token: string) {
     const deletedToken = await tokenRepository.deleteRefreshSession(refresh_token)
     return deletedToken
@@ -101,21 +104,19 @@ class UserService {
 
 
   static async refresh(refresh_token: string, finger_print: FingerprintResult) {
-    if (!refresh_token){
+    if (!refresh_token) {
       throw ApiError.UnauthorizedError()
     }
 
-    const isValidRefreshToken = tokenService.validateRefreshToken(refresh_token)
+    const isValidRefreshToken = await tokenService.validateRefreshToken(refresh_token)
     const tokenFromDB = await tokenRepository.getRefreshSessionDataByRefreshToken(refresh_token)
 
     if (!isValidRefreshToken || !tokenFromDB) {
       throw ApiError.UnauthorizedError()
     }
 
-    // @ts-ignore
     const userDataFromDB = await userRepository.getUserDataById(isValidRefreshToken.userId)
-    // @ts-ignore
-    const userDto = new UserDto(userDataFromDB)
+    const userDto = new UserDto(userDataFromDB as UserSchema)
     const accessToken = await TokenService.generateAccessToken({...userDto})
     const refreshToken = await TokenService.generateRefreshToken({...userDto})
 

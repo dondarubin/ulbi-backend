@@ -1,7 +1,7 @@
 import {IEnvironmentService} from "../services/environmentService";
 import postgres, {Row, RowList} from "postgres";
 import {FingerprintResult} from "express-fingerprint";
-import {tokenSchema} from "./models/tokenSchema";
+import {TokenSchema} from "./models/tokenSchema";
 
 interface IDatabase {
   createNewUser(username: string, password: string): Promise<RowList<Row[]>>,
@@ -30,6 +30,13 @@ export class Postgres implements IDatabase {
     `
   }
 
+  public async getAllUsers() {
+    return this.database`
+        SELECT *
+        FROM users
+    `
+  }
+
   public async getUserDataByUsername(username: string) {
     return this.database`
         SELECT *
@@ -46,7 +53,7 @@ export class Postgres implements IDatabase {
     `
   }
 
-  public async createRefreshSession(refreshToken: tokenSchema) {
+  public async createRefreshSession(refreshToken: TokenSchema) {
     return this.database`
         INSERT INTO tokens (user_id, refresh_token, finger_print)
         VALUES (${refreshToken.user_id},
@@ -81,7 +88,7 @@ export class Postgres implements IDatabase {
     `
   }
 
-  public async updateTokenData(refreshTokenObject: tokenSchema) {
+  public async updateTokenData(refreshTokenObject: TokenSchema) {
     return this.database`
         UPDATE tokens
         SET refresh_token = ${refreshTokenObject.refresh_token},

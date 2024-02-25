@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import ApiError from "../exceptions/errors";
 import tokenService from "../services/TokenService";
 
-export function authMiddleware(req: Request, res: Response, next: NextFunction) {
+export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
   try {
     const authorizationHeader = req.headers.authorization;
 
@@ -16,14 +16,15 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
       return next(ApiError.UnauthorizedError())
     }
 
-    // TODO
-    const data = tokenService.validateAccessToken(accessToken)
-
+    // TODO изменить название
+    const data = await tokenService.validateAccessToken(accessToken)
+    console.log(data)
     if (!data){
       return next(ApiError.UnauthorizedError())
     }
 
-    res.status(200).json(111)
+    // @ts-ignore
+    req.user = data
     next()
   } catch (err) {
     return next(ApiError.UnauthorizedError())

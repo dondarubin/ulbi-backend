@@ -1,9 +1,8 @@
 import {postgres} from "../index";
-import {FingerprintResult} from "express-fingerprint";
-import {tokenSchema} from "../database/models/tokenSchema";
+import {TokenSchema} from "../database/models/tokenSchema";
 
 class TokenRepository {
-  static async createRefreshSession(refreshTokenObject: tokenSchema) {
+  static async createRefreshSession(refreshTokenObject: TokenSchema) {
     const tokenDataFromDB = await postgres.getTokenDataByUserId(refreshTokenObject.user_id)
 
     if (tokenDataFromDB.length) {
@@ -15,15 +14,23 @@ class TokenRepository {
     return createdTokenDataDB
   }
 
+
   static async deleteRefreshSession(refresh_token: string) {
     const deletedTokenDataDB = await postgres.deleteRefreshSession(refresh_token)
     return deletedTokenDataDB
   }
 
+
   static async getRefreshSessionDataByRefreshToken(refresh_token: string) {
     const deletedTokenDataDB = await postgres.getTokenDataByRefreshToken(refresh_token)
-    return deletedTokenDataDB
+
+    if (!deletedTokenDataDB.length) {
+      return null
+    }
+
+    return deletedTokenDataDB[0] as TokenSchema
   }
+
 
   // static async getRefreshSessionData(user_id: number) {
   //   const tokenDataFromDB = await postgres.getTokenData(user_id)

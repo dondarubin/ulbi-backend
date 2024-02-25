@@ -4,6 +4,7 @@ import {COOKIE_SETTINGS} from "../const/constants";
 import ApiError from "../exceptions/errors";
 import {validationResult} from "express-validator";
 import userService from "../services/UserService";
+import {postgres} from "../index";
 
 
 class UserController {
@@ -82,17 +83,29 @@ class UserController {
 
     if (fingerprint) {
       try {
-        const currentRefreshToken = req.cookies.refreshToken
+        const refreshToken = req.cookies.refreshToken
 
         // TODO
-        const data = await userService.refresh(currentRefreshToken, fingerprint)
-        //
-        // res.cookie("refreshToken", refreshToken, COOKIE_SETTINGS.REFRESH_TOKEN)
-        //
-        // return res.status(200).json({accessToken, accessTokenExpiration})
+        const data = await userService.refresh(refreshToken, fingerprint)
+
+        res.cookie("refreshToken", data.refreshToken, COOKIE_SETTINGS.REFRESH_TOKEN)
+
+        return res.status(200).json({
+          accessToken: data.accessToken,
+          accessTokenExpiration: data.accessTokenExpiration
+        })
       } catch (err) {
         next(err)
       }
+    }
+  }
+
+  static async getUsers(req: Request, res: Response, next: NextFunction) {
+    try {
+      const response = await postgres.getAllUsers()
+      return res.status(200).json(response)
+    } catch (err) {
+      next(err)
     }
   }
 }
