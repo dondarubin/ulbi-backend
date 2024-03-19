@@ -24,7 +24,7 @@ export class Postgres implements IDatabase {
 
   public async createNewUser(username: string, hashedPassword: string) {
     return this.database`
-        INSERT INTO users (username, hashed_password)
+        INSERT INTO Users (username, hashed_password)
         VALUES (${username}, ${hashedPassword})
         RETURNING *
     `
@@ -33,14 +33,14 @@ export class Postgres implements IDatabase {
   public async getAllUsers() {
     return this.database`
         SELECT *
-        FROM users
+        FROM Users
     `
   }
 
   public async getUserDataByUsername(username: string) {
     return this.database`
         SELECT *
-        FROM users
+        FROM Users
         WHERE username = ${username}
     `
   }
@@ -48,14 +48,14 @@ export class Postgres implements IDatabase {
   public async getUserDataById(user_id: number) {
     return this.database`
         SELECT *
-        FROM users
+        FROM Users
         WHERE user_id = ${user_id}
     `
   }
 
   public async createRefreshSession(refreshToken: TokenSchema) {
     return this.database`
-        INSERT INTO tokens (user_id, refresh_token, finger_print)
+        INSERT INTO Tokens (user_id, refresh_token, finger_print)
         VALUES (${refreshToken.user_id},
                 ${refreshToken.refresh_token},
                 ${refreshToken.finger_print.hash})
@@ -66,7 +66,7 @@ export class Postgres implements IDatabase {
   public async deleteRefreshSession(refresh_token: string) {
     return this.database`
         DELETE
-        FROM tokens
+        FROM Tokens
         WHERE refresh_token = ${refresh_token}
         RETURNING refresh_token
     `
@@ -75,7 +75,7 @@ export class Postgres implements IDatabase {
   public async getTokenDataByUserId(user_id: number) {
     return this.database`
         SELECT *
-        FROM tokens
+        FROM Tokens
         WHERE (user_id = ${user_id})
     `
   }
@@ -83,7 +83,7 @@ export class Postgres implements IDatabase {
   public async getTokenDataByRefreshToken(refresh_token: string) {
     return this.database`
         SELECT *
-        FROM tokens
+        FROM Tokens
         WHERE (refresh_token = ${refresh_token})
     `
   }
@@ -92,8 +92,10 @@ export class Postgres implements IDatabase {
     return this.database`
         UPDATE tokens
         SET refresh_token = ${refreshTokenObject.refresh_token},
-            finger_print  = ${refreshTokenObject.finger_print.hash}
+            finger_print  = ${refreshTokenObject.finger_print.hash},
+            timestamp     = CURRENT_TIMESTAMP
         WHERE user_id = ${refreshTokenObject.user_id}
+        RETURNING *
     `
   }
 

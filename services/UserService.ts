@@ -32,6 +32,7 @@ class UserService {
     })
 
     return {
+      user: userDto,
       accessToken,
       refreshToken,
       accessTokenExpiration: ACCESS_TOKEN_EXPIRATION
@@ -90,6 +91,7 @@ class UserService {
     })
 
     return {
+      user: userDto,
       accessToken,
       refreshToken,
       accessTokenExpiration: ACCESS_TOKEN_EXPIRATION
@@ -109,14 +111,21 @@ class UserService {
     }
 
     const isValidRefreshToken = await tokenService.validateRefreshToken(refresh_token)
-    const tokenFromDB = await tokenRepository.getRefreshSessionDataByRefreshToken(refresh_token)
+    const refreshTokenFromDB = await tokenRepository.getRefreshSessionDataByRefreshToken(refresh_token)
 
-    if (!isValidRefreshToken || !tokenFromDB) {
+    if (!isValidRefreshToken || !refreshTokenFromDB) {
       throw ApiError.UnauthorizedError()
     }
 
     const userDataFromDB = await userRepository.getUserDataById(isValidRefreshToken.userId)
-    const userDto = new UserDto(userDataFromDB as UserSchema)
+
+    // TODO добавил просто так, если что то сломается удалить и вернуть строку:
+    // const userDto = new UserDto(userDataFromDB as UserSchema)
+    if (!userDataFromDB) {
+      throw ApiError.BadRequest(`User not found!`)
+    }
+
+    const userDto = new UserDto(userDataFromDB)
     const accessToken = await TokenService.generateAccessToken({...userDto})
     const refreshToken = await TokenService.generateRefreshToken({...userDto})
 
@@ -127,6 +136,7 @@ class UserService {
     })
 
     return {
+      user: userDto,
       accessToken,
       refreshToken,
       accessTokenExpiration: ACCESS_TOKEN_EXPIRATION

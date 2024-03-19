@@ -22,6 +22,7 @@ class UserController {
         const {username, password} = req.body
 
         const {
+          user: userDto,
           accessToken,
           refreshToken,
           accessTokenExpiration
@@ -29,7 +30,7 @@ class UserController {
 
         res.cookie("refreshToken", refreshToken, COOKIE_SETTINGS.REFRESH_TOKEN)
 
-        return res.status(200).json({accessToken, accessTokenExpiration})
+        return res.status(200).json({user: userDto, accessToken, accessTokenExpiration})
       } catch (err) {
         next(err)
       }
@@ -50,14 +51,17 @@ class UserController {
         const {username, password} = req.body
 
         const {
+          user: userDto,
           accessToken,
           refreshToken,
           accessTokenExpiration
         } = await UserService.login(username, password, fingerprint)
 
+        // TODO узнать почему cookie не перезаписываются
+        // TODO PS: вроде решил
         res.cookie("refreshToken", refreshToken, COOKIE_SETTINGS.REFRESH_TOKEN)
 
-        return res.status(200).json({accessToken, accessTokenExpiration})
+        return res.status(200).json({user: userDto, accessToken, accessTokenExpiration})
       } catch (err) {
         next(err)
       }
@@ -83,16 +87,21 @@ class UserController {
 
     if (fingerprint) {
       try {
-        const refreshToken = req.cookies.refreshToken
+        const currentRefreshToken = req.cookies.refreshToken
 
-        // TODO
-        const data = await userService.refresh(refreshToken, fingerprint)
+        const {
+          user: userDto,
+          accessToken,
+          accessTokenExpiration,
+          refreshToken
+        } = await userService.refresh(currentRefreshToken, fingerprint)
 
-        res.cookie("refreshToken", data.refreshToken, COOKIE_SETTINGS.REFRESH_TOKEN)
+        res.cookie("refreshToken", refreshToken, COOKIE_SETTINGS.REFRESH_TOKEN)
 
         return res.status(200).json({
-          accessToken: data.accessToken,
-          accessTokenExpiration: data.accessTokenExpiration
+          user: userDto,
+          accessToken,
+          accessTokenExpiration
         })
       } catch (err) {
         next(err)

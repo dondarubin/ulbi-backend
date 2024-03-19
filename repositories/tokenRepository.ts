@@ -22,13 +22,13 @@ class TokenRepository {
 
 
   static async getRefreshSessionDataByRefreshToken(refresh_token: string) {
-    const deletedTokenDataDB = await postgres.getTokenDataByRefreshToken(refresh_token)
+    const refreshTokenDataFromDB = await postgres.getTokenDataByRefreshToken(refresh_token)
 
-    if (!deletedTokenDataDB.length) {
+    if (!refreshTokenDataFromDB.length) {
       return null
     }
 
-    return deletedTokenDataDB[0] as TokenSchema
+    return refreshTokenDataFromDB[0] as TokenSchema
   }
 
 
