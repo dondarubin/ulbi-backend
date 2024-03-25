@@ -76,7 +76,7 @@ class UserController {
 
       res.clearCookie("refreshToken")
 
-      return res.status(200).json(deletedToken)
+      return res.status(200).json({deletedToken: deletedToken})
     } catch (err) {
       next(err)
     }
