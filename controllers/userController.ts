@@ -5,6 +5,9 @@ import ApiError from "../exceptions/errors";
 import {validationResult} from "express-validator";
 import userService from "../services/UserService";
 import {postgres} from "../index";
+import ProfileController from "./profileController";
+import profileDto from "../dtos/profileDto";
+import ProfileService from "../services/ProfileService";
 
 
 class UserController {
@@ -28,9 +31,18 @@ class UserController {
           accessTokenExpiration
         } = await UserService.register(username, password, fingerprint)
 
+        const {
+          profile: profileDto
+        } = await ProfileService.createProfile(userDto.userId, userDto.userName)
+
         res.cookie("refreshToken", refreshToken, COOKIE_SETTINGS.REFRESH_TOKEN)
 
-        return res.status(200).json({user: userDto, accessToken, accessTokenExpiration})
+        return res.status(200).json({
+          user: userDto,
+          accessToken,
+          accessTokenExpiration,
+          profile: profileDto
+        })
       } catch (err) {
         next(err)
       }
@@ -57,8 +69,6 @@ class UserController {
           accessTokenExpiration
         } = await UserService.login(username, password, fingerprint)
 
-        // TODO узнать почему cookie не перезаписываются
-        // TODO PS: вроде решил
         res.cookie("refreshToken", refreshToken, COOKIE_SETTINGS.REFRESH_TOKEN)
 
         return res.status(200).json({user: userDto, accessToken, accessTokenExpiration})
@@ -109,6 +119,7 @@ class UserController {
     }
   }
 
+  // TODO удалить как разберусь с jwt
   static async getUsers(req: Request, res: Response, next: NextFunction) {
     try {
       const response = await postgres.getAllUsers()

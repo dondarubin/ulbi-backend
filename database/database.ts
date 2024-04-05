@@ -99,6 +99,22 @@ export class Postgres implements IDatabase {
     `
   }
 
+  public async createProfileFromRegistration(user_id: number, username: string) {
+    return this.database`
+        INSERT INTO profiles (user_id, username)
+        VALUES (${user_id}, ${username})
+        RETURNING *
+    `
+  }
+
+  public async getProfileById(profile_id: number) {
+    return this.database`
+        SELECT *
+        FROM profiles
+        WHERE profile_id = ${profile_id}
+    `
+  }
+
   // public async updateTokenData(user_id: number, new_refresh_token: string, finger_print: FingerprintResult) {
   //   return this.database`
   //       UPDATE tokens

@@ -52,34 +52,7 @@ class UserService {
     if (!isValidPassword) {
       throw ApiError.BadRequest(`Invalid password`)
     }
-
-    // // Массив сессий
-    // const refreshTokensArray = await TokenRepository.getRefreshSessionData(userDataFromDB.user_id)
-    //
-    // // Если пользователь заходит со старого устройства
-    // const a = refreshTokensArray.map(async (session) => {
-    //   if (session.finger_print === fingerprint) {
-    //     const userDto = new UserDto(userDataFromDB)
-    //
-    //     const accessToken = await TokenService.generateAccessToken({...userDto})
-    //     const refreshToken = await TokenService.generateRefreshToken({...userDto})
-    //
-    //     await TokenRepository.updateRefreshSessionData(userDataFromDB.user_id, refreshToken, fingerprint)
-    //
-    //     return {
-    //       accessToken,
-    //       refreshToken,
-    //     }
-    //   }
-    // })
-    //
-    // // Если пользователь заходит с нового устройства и
-    // // если у пользователя больше чем 3 активные сессии,
-    // // удаляем самую первую запись и добавляем новую
-    // if (refreshTokensArray.length > 3) {
-    //   await TokenRepository.deleteRefreshSession(refreshTokensArray[0].refresh_token)
-    // }
-
+    
     const userDto = new UserDto(userDataFromDB)
     const accessToken = await TokenService.generateAccessToken({...userDto})
     const refreshToken = await TokenService.generateRefreshToken({...userDto})

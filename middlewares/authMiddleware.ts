@@ -16,15 +16,15 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
       return next(ApiError.UnauthorizedError())
     }
 
-    // TODO изменить название
-    const data = await tokenService.validateAccessToken(accessToken)
-    console.log(data)
-    if (!data){
+    const isValidAccessToken = await tokenService.validateAccessToken(accessToken)
+    console.log(isValidAccessToken)
+
+    if (!isValidAccessToken){
       return next(ApiError.UnauthorizedError())
     }
 
     // @ts-ignore
-    req.user = data
+    req.user = isValidAccessToken
     next()
   } catch (err) {
     return next(ApiError.UnauthorizedError())

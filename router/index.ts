@@ -2,6 +2,8 @@ import express from "express";
 import UserController from "../controllers/userController";
 import {body} from "express-validator";
 import {authMiddleware} from "../middlewares/authMiddleware";
+import ProfileRepository from "../repositories/profileRepository";
+import ProfileController from "../controllers/profileController";
 
 export const router = express.Router();
 router.post('/register',
@@ -44,3 +46,4 @@ router.post('/login',
 router.post('/logout', UserController.logout)
 router.get('/refresh', UserController.refresh)
 router.get('/users', authMiddleware, UserController.getUsers)
+router.get('/profile/:profileId', ProfileController.getProfile)
