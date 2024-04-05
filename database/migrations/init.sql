@@ -29,18 +29,3 @@ CREATE TABLE Profiles
     username   VARCHAR(20) UNIQUE NOT NULL REFERENCES Users (username) ON DELETE CASCADE,
     avatar     VARCHAR(400)
 );
-
-
-
-SELECT *
-FROM Users;
-SELECT *
-FROM Tokens;
-
-SELECT *
-FROM users
-WHERE username = 'Mama';
-
-INSERT INTO users (username, hashed_password)
-VALUES ('Papa', '12333')
-RETURNING *

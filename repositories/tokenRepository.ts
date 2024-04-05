@@ -30,25 +30,6 @@ class TokenRepository {
 
     return refreshTokenDataFromDB[0] as TokenSchema
   }
-
-
-  // static async getRefreshSessionData(user_id: number) {
-  //   const tokenDataFromDB = await postgres.getTokenData(user_id)
-  //   return tokenDataFromDB
-  // }
-
-  // static async updateRefreshSessionData(
-  //   user_id: number,
-  //   new_refresh_token: string,
-  //   finger_print: FingerprintResult
-  // ) {
-  //   const updatedTokenDataFromDB = await postgres.updateTokenData(
-  //     user_id,
-  //     new_refresh_token,
-  //     finger_print
-  //   )
-  //   return updatedTokenDataFromDB
-  // }
 }
 
 export default TokenRepository;

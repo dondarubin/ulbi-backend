@@ -114,14 +114,6 @@ export class Postgres implements IDatabase {
         WHERE profile_id = ${profile_id}
     `
   }
-
-  // public async updateTokenData(user_id: number, new_refresh_token: string, finger_print: FingerprintResult) {
-  //   return this.database`
-  //       UPDATE tokens
-  //       SET refresh_token = ${new_refresh_token}
-  //       WHERE user_id = ${user_id} AND finger_print = ${finger_print.hash}
-  //   `
-  // }
 }
 
 
