@@ -1,13 +1,12 @@
+import {Country, Currency } from "../../const/constants";
 
 export interface ProfileSchema {
-  profile_id: number,
-  user_id: number,
   firstname?: string,
   lastname?: string,
   age?: number,
-  currency?: string,
-  country?: string,
+  currency?: Currency | '',
+  country?: Country | '',
   city?: string,
   username: string,
-  avatar?: string
+  avatar?: string;
 }

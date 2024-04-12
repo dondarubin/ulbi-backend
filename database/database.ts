@@ -2,6 +2,8 @@ import {IEnvironmentService} from "../services/environmentService";
 import postgres, {Row, RowList} from "postgres";
 import {FingerprintResult} from "express-fingerprint";
 import {TokenSchema} from "./models/tokenSchema";
+import {ProfileSchema} from "./models/profileSchema";
+import {UserSchema} from "./models/userSchema";
 
 interface IDatabase {
   createNewUser(username: string, password: string): Promise<RowList<Row[]>>,
@@ -99,10 +101,10 @@ export class Postgres implements IDatabase {
     `
   }
 
-  public async createProfileFromRegistration(user_id: number, username: string) {
+  public async createProfileFromRegistration(username: string) {
     return this.database`
-        INSERT INTO profiles (user_id, username)
-        VALUES (${user_id}, ${username})
+        INSERT INTO profiles (username)
+        VALUES (${username})
         RETURNING *
     `
   }
@@ -112,6 +114,21 @@ export class Postgres implements IDatabase {
         SELECT *
         FROM profiles
         WHERE profile_id = ${profile_id}
+    `
+  }
+
+  public async updateProfile(profile_id: number, profileFormData: ProfileSchema) {
+    return this.database`
+        UPDATE profiles
+        SET firstname = ${profileFormData.firstname || ''},
+            lastname  = ${profileFormData.lastname || ''},
+            age       = ${profileFormData.age || 0},
+            currency  = ${profileFormData.currency || ''},
+            country   = ${profileFormData.country || ''},
+            city      = ${profileFormData.city || ''},
+            avatar    = ${profileFormData.avatar || ''}
+        WHERE profile_id = ${profile_id}
+        RETURNING *
     `
   }
 }
