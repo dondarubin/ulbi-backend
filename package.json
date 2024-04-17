@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "dev": "nodemon index.ts"
+    "dev": "nodemon index.ts",
+    "dev:doc": "concurrently \"nodemon index.ts\" \"docker start 588189f51dfb\""
   },
   "keywords": [],
   "author": "",
@@ -28,6 +29,7 @@
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "^20.11.17",
+    "concurrently": "^8.2.2",
     "nodemon": "^3.0.3",
     "typescript": "^5.3.3"
   }
