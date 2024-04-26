@@ -3,6 +3,13 @@ import ProfileService from "../services/ProfileService";
 import {ProfileSchema} from "../database/models/profileSchema";
 
 class ProfileController {
+  static async createProfile(username: string) {
+    const {
+      profile: profileDto
+    } = await ProfileService.createProfile(username)
+    return {profile: profileDto}
+  }
+
   static async getProfile(req: Request, res: Response, next: NextFunction) {
     try {
       const profile_id = Number(req.params.profileId);

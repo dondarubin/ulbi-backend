@@ -4,6 +4,7 @@ import {FingerprintResult} from "express-fingerprint";
 import {TokenSchema} from "./models/tokenSchema";
 import {ProfileSchema} from "./models/profileSchema";
 import {UserSchema} from "./models/userSchema";
+import {ArticleSchema} from "./models/ArticleSchema";
 
 interface IDatabase {
   createNewUser(username: string, password: string): Promise<RowList<Row[]>>,
@@ -24,6 +25,7 @@ export class Postgres implements IDatabase {
     })
   }
 
+  // USER
   public async createNewUser(username: string, hashedPassword: string) {
     return this.database`
         INSERT INTO Users (username, hashed_password)
@@ -55,6 +57,7 @@ export class Postgres implements IDatabase {
     `
   }
 
+  // TOKEN
   public async createRefreshSession(refreshToken: TokenSchema) {
     return this.database`
         INSERT INTO Tokens (user_id, refresh_token, finger_print)
@@ -101,6 +104,7 @@ export class Postgres implements IDatabase {
     `
   }
 
+  // PROFILE
   public async createProfileFromRegistration(username: string) {
     return this.database`
         INSERT INTO profiles (username)
@@ -129,6 +133,27 @@ export class Postgres implements IDatabase {
             avatar    = ${profileFormData.avatar || ''}
         WHERE profile_id = ${profile_id}
         RETURNING *
+    `
+  }
+
+  // ARTICLE
+  public async createArticle(article: ArticleSchema) {
+    return this.database`
+        INSERT INTO articles (user_id, title, subtitle, img, type)
+        VALUES (${article.user_id},
+                ${article.title},
+                ${article.subtitle},
+                ${article.img},
+                ${article.type})
+        RETURNING *
+    `
+  }
+
+  public async getArticleById(articleId: number) {
+    return this.database`
+        SELECT *
+        FROM articles
+        WHERE article_id = ${articleId}
     `
   }
 }

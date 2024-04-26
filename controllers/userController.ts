@@ -6,6 +6,7 @@ import {validationResult} from "express-validator";
 import userService from "../services/UserService";
 import {postgres} from "../index";
 import ProfileService from "../services/ProfileService";
+import ProfileController from "./profileController";
 
 
 class UserController {
@@ -31,7 +32,7 @@ class UserController {
 
         const {
           profile: profileDto
-        } = await ProfileService.createProfile(userDto.userName)
+        } = await ProfileController.createProfile(userDto.userName)
 
         res.cookie("refreshToken", refreshToken, COOKIE_SETTINGS.REFRESH_TOKEN)
 

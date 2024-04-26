@@ -23,3 +23,9 @@ export enum Country {
   UAE = 'United Arab Emirates',
   UNITEDSTATES = 'United States',
 }
+
+export enum ArticleType {
+  IT = 'IT',
+  ECONOMY = 'Economy',
+  BUSINESS = 'Business',
+}
