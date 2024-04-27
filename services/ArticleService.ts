@@ -10,9 +10,16 @@ import ArticleRepository from "../repositories/articleRepository";
 import ArticleDto from "../dtos/articleDto";
 import {ArticleType} from "../const/constants";
 import {ajv} from "../index";
+import userRepository from "../repositories/userRepository";
 
 class ArticleService {
   static async createArticle(article: ArticleSchema) {
+    const userFromDb = await userRepository.getUserDataById(article.user_id)
+
+    if (!userFromDb) {
+      throw ApiError.BadRequest(`User with user_id: ${article.user_id} not found!`)
+    }
+
     if (!article.title || !article.subtitle || !article.img || !article.type || !article.content) {
       throw ApiError.BadRequest(`Article data isn't complete!`)
     }

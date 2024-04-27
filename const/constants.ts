@@ -36,7 +36,7 @@ const testArticleContent: ArticleSchema = {
   "title": "Javascript news",
   "subtitle": "Что нового в JS за 2022 год?",
   "img": "https://teknotower.com/wp-content/uploads/2020/11/js.png",
-  "user_id": 1,
+  "user_id": 23,
   "type": [ArticleType.IT],
   "content": [
     {
