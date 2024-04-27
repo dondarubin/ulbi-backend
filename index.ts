@@ -6,10 +6,11 @@ import {Postgres} from "./database/database";
 import {router} from "./router";
 import Fingerprint from "express-fingerprint";
 import {errorMiddleware} from "./middlewares/errorMiddleware";
-
+import Ajv from "ajv"
 
 export const environmentService = new EnvironmentService();
 export const postgres = new Postgres(environmentService);
+export const ajv = new Ajv();
 const app = express()
 
 app.use(express.json())

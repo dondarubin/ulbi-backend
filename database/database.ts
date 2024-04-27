@@ -4,7 +4,15 @@ import {FingerprintResult} from "express-fingerprint";
 import {TokenSchema} from "./models/tokenSchema";
 import {ProfileSchema} from "./models/profileSchema";
 import {UserSchema} from "./models/userSchema";
-import {ArticleSchema} from "./models/ArticleSchema";
+import {
+  ArticleCodeContent,
+  ArticleContent,
+  ArticleContentType,
+  ArticleImageContent,
+  ArticleSchema,
+  ArticleTextContent
+} from "./models/ArticleSchema";
+import {ArticleType} from "../const/constants";
 
 interface IDatabase {
   createNewUser(username: string, password: string): Promise<RowList<Row[]>>,
@@ -154,6 +162,44 @@ export class Postgres implements IDatabase {
         SELECT *
         FROM articles
         WHERE article_id = ${articleId}
+    `
+  }
+
+  public async createArticleContentText(article_id: number, currentContent: ArticleTextContent) {
+    return this.database`
+        INSERT INTO articlecontents (article_id, article_content_type, article_content_details)
+        VALUES (${article_id},
+                ${ArticleContentType.TEXT},
+                ${JSON.stringify(currentContent)})
+        RETURNING *
+    `
+  }
+
+  public async createArticleContentImage(article_id: number, currentContent: ArticleImageContent) {
+    return this.database`
+        INSERT INTO articlecontents (article_id, article_content_type, article_content_details)
+        VALUES (${article_id},
+                ${ArticleContentType.IMAGE},
+                ${JSON.stringify(currentContent)})
+        RETURNING *
+    `
+  }
+
+  public async createArticleContentCode(article_id: number, currentContent: ArticleCodeContent) {
+    return this.database`
+        INSERT INTO articlecontents (article_id, article_content_type, article_content_details)
+        VALUES (${article_id},
+                ${ArticleContentType.CODE},
+                ${JSON.stringify(currentContent)})
+        RETURNING *
+    `
+  }
+
+  public async getArticleContentById(article_id: number) {
+    return this.database`
+        SELECT article_content_details
+        FROM articlecontents
+        WHERE article_id = ${article_id}
     `
   }
 }

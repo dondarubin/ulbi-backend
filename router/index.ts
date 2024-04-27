@@ -45,13 +45,9 @@ router.post('/login',
 )
 router.post('/logout', UserController.logout)
 router.get('/refresh', UserController.refresh)
-router.get('/users', authMiddleware, UserController.getUsers)
 
 router.get('/profile/:profileId', authMiddleware, ProfileController.getProfile)
 router.put('/profile/:profileId', authMiddleware, ProfileController.updateProfile)
 
-// router.post('/createArticle', authMiddleware, ArticleController.createArticle)
-// router.get('/article/:articleId', authMiddleware, ArticleController.getArticle)
-
-router.post('/createArticle', ArticleController.createArticle)
-router.get('/article/:articleId', ArticleController.getArticle)
+router.post('/createArticle', authMiddleware, ArticleController.createArticle)
+router.get('/articles/:articleId', authMiddleware, ArticleController.getArticle)

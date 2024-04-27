@@ -71,41 +71,23 @@ CREATE TABLE Articles
 
 CREATE TYPE ArticleTypes AS ENUM ('IT', 'Economy', 'Business');
 
-CREATE TABLE ArticleTypes
+CREATE TYPE ArticleContentTypes AS ENUM ('TEXT', 'IMAGE', 'CODE');
+
+CREATE TABLE ArticleContents
 (
-    article_type_id   SERIAL PRIMARY KEY,
-    article_type_name VARCHAR(50) UNIQUE NOT NULL
+    article_content_id      SERIAL PRIMARY KEY,
+    article_id              INT                 NOT NULL REFERENCES Articles (article_id) ON DELETE CASCADE,
+    article_content_type    ArticleContentTypes NOT NULL,
+    article_content_details TEXT                NOT NULL
 );
 
-CREATE TABLE ArticleTypeRelation
-(
-    article_id      INT NOT NULL REFERENCES Articles (article_id) ON DELETE CASCADE,
-    article_type_id INT NOT NULL REFERENCES ArticleTypes (article_type_id)
-);
-
-CREATE TABLE ArticleContentTexts
-(
-    article_content_text_id         SERIAL PRIMARY KEY,
-    article_id                      INT    NOT NULL REFERENCES Articles (article_id) ON DELETE CASCADE,
-    article_content_text_title      TEXT   NOT NULL,
-    article_content_text_paragraphs TEXT[] NOT NULL
-);
-
-CREATE TABLE ArticleContentImages
-(
-    article_content_image_id     SERIAL PRIMARY KEY,
-    article_id                   INT          NOT NULL REFERENCES Articles (article_id) ON DELETE CASCADE,
-    article_content_image_url    TEXT         NOT NULL,
-    article_content_text_caption VARCHAR(100) NOT NULL
-);
-
-CREATE TABLE ArticleContentCodes
-(
-    article_content_code_id   SERIAL PRIMARY KEY,
-    article_id                INT  NOT NULL REFERENCES Articles (article_id) ON DELETE CASCADE,
-    article_content_code_text TEXT NOT NULL
-);
-
+-- CREATE TABLE ArticleContents
+-- (
+--     article_content_id      SERIAL PRIMARY KEY,
+--     article_id              INT                 NOT NULL REFERENCES Articles (article_id) ON DELETE CASCADE,
+--     article_content_type    ArticleContentTypes NOT NULL,
+--     article_content_details JSONB                NOT NULL
+-- );
 
 CREATE TABLE Comments
 (

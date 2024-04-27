@@ -117,16 +117,6 @@ class UserController {
       }
     }
   }
-
-  // TODO удалить как разберусь с jwt
-  static async getUsers(req: Request, res: Response, next: NextFunction) {
-    try {
-      const response = await postgres.getAllUsers()
-      return res.status(200).json(response)
-    } catch (err) {
-      next(err)
-    }
-  }
 }
 
 export default UserController;

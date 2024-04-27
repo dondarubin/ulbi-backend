@@ -1,3 +1,3 @@
-insert into articles (title, subtitle, img, views, user_id)
-values (${title}, ${subtitle}, ${img}, ${views}, ${user_id})
+insert into articles (user_id, title, subtitle, img, views, type)
+values (${user_id}, ${title}, ${subtitle}, ${img}, ${views}, ${type})
 RETURNING *

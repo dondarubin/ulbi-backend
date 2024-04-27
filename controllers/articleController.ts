@@ -10,17 +10,19 @@ class ArticleController {
         img,
         type,
         user_id,
+        content
       } = req.body
 
-      const createdArticle = await ArticleService.createArticle({
+      const articleDto = await ArticleService.createArticle({
         title: title,
         subtitle: subtitle,
         img: img,
         type: type,
-        user_id: Number(user_id)
+        user_id: Number(user_id),
+        content: content
       })
 
-      return res.status(200).json(createdArticle)
+      return res.status(200).json(articleDto)
     } catch (err) {
       next(err)
     }
