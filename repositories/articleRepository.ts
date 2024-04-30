@@ -1,10 +1,14 @@
 import {postgres} from "../index";
 import {
-  ArticleCodeContent, ArticleCodeContentResponse, ArticleContent,
-  ArticleImageContent, ArticleImageContentResponse,
+  ArticleCodeContent,
+  ArticleCodeContentResponse, ArticleComment, ArticleCommentsSchema,
+  ArticleContent,
+  ArticleImageContent,
+  ArticleImageContentResponse,
   ArticleSchema,
   ArticleSchemaResponse,
-  ArticleTextContent, ArticleTextContentResponse
+  ArticleTextContent,
+  ArticleTextContentResponse
 } from "../database/models/ArticleSchema";
 
 class ArticleRepository {
@@ -57,7 +61,7 @@ class ArticleRepository {
 
     const searchingArticle = articleResponse[0] as ArticleSchemaResponse
 
-    const rowDate = new Date(searchingArticle.createdat)
+    const rowDate = new Date(searchingArticle.created_at)
     const formattedDate = new Intl.DateTimeFormat('ru-RU', {
       day: '2-digit', month: '2-digit', year: 'numeric'
     }).format(rowDate);
@@ -77,9 +81,35 @@ class ArticleRepository {
 
     return {
       ...searchingArticle,
-      createdat: formattedDate,
+      created_at: formattedDate,
       content: articleContentSummary
     }
+  }
+
+  static async getArticleComments(article_id: number) {
+    const articleCommentsResponse = await postgres.getArticleComments(article_id)
+
+    if (!articleCommentsResponse.length) {
+      return null
+    }
+
+    const summary: ArticleCommentsSchema[] = []
+
+    articleCommentsResponse.map((comment) => {
+      summary.push(comment as ArticleCommentsSchema)
+    })
+
+    return summary
+  }
+
+  static async createArticleComments(articleId: number, userId: number, commentText: string) {
+    const articleCommentsResponse = await postgres.createArticleComments(articleId, userId, commentText)
+
+    if (!articleCommentsResponse.length) {
+      return null
+    }
+
+    return articleCommentsResponse[0] as ArticleComment
   }
 }
 

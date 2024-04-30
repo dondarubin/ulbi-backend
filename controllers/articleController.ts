@@ -39,6 +39,33 @@ class ArticleController {
       next(err)
     }
   }
+
+  static async getArticleComments(req: Request, res: Response, next: NextFunction) {
+    try {
+      const articleId = Number(req.params.articleId);
+
+      const searchingComments = await ArticleService.getArticleComments(articleId)
+
+      return res.status(200).json(searchingComments)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  static async createArticleComments(req: Request, res: Response, next: NextFunction) {
+    try {
+      const articleId = Number(req.params.articleId);
+      const {userId, commentText} = req.body
+
+      const {
+        articleComment: articleCommentDto
+      } = await ArticleService.createArticleComments(articleId, userId, commentText)
+
+      return res.status(200).json(articleCommentDto)
+    } catch (err) {
+      next(err)
+    }
+  }
 }
 
 export default ArticleController;

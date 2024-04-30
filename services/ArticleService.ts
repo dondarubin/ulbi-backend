@@ -7,10 +7,11 @@ import {
   ContentTextAvjSchema
 } from "../database/models/ArticleSchema";
 import ArticleRepository from "../repositories/articleRepository";
-import ArticleDto from "../dtos/articleDto";
 import {ArticleType} from "../const/constants";
 import {ajv} from "../index";
 import userRepository from "../repositories/userRepository";
+import UserRepository from "../repositories/userRepository";
+import ArticleDto from "../dtos/articleDto";
 
 class ArticleService {
   static async createArticle(article: ArticleSchema) {
@@ -105,7 +106,33 @@ class ArticleService {
       throw ApiError.BadRequest(`Article with article_id = '${articleId}' not found!`)
     }
 
-    return {article: articleData}
+    return articleData
+  }
+
+  static async getArticleComments(articleId: number) {
+    const articleCommentsData = await ArticleRepository.getArticleComments(articleId)
+
+    if (!articleCommentsData) {
+      throw ApiError.BadRequest(`Article comments with article_id = '${articleId}' not found!`)
+    }
+
+    return articleCommentsData
+  }
+
+  static async createArticleComments(articleId: number, userId: number, commentText: string) {
+    const userFromDb = await UserRepository.getUserDataById(userId);
+
+    if (!userFromDb) {
+      throw ApiError.BadRequest(`User with user_id = '${userId}' not found!`)
+    }
+
+    const articleCommentsData = await ArticleRepository.createArticleComments(articleId, userId, commentText)
+
+    if (!articleCommentsData) {
+      throw ApiError.BadRequest(`Create comment to article with article_id = '${articleId}' error!`)
+    }
+
+    return {articleComment: articleCommentsData}
   }
 }
 

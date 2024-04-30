@@ -1,4 +1,5 @@
 import {ArticleType} from "../../const/constants";
+import {UserWithAvatarSchema} from "./userSchema";
 
 export enum ArticleContentType {
   TEXT = 'TEXT',
@@ -40,7 +41,7 @@ export interface ArticleSchema {
 
 export interface ArticleSchemaResponse extends ArticleSchema{
   article_id: number;
-  createdat: string
+  created_at: string
 }
 
 export interface ArticleTextContentResponse{
@@ -62,6 +63,22 @@ export interface ArticleCodeContentResponse{
   article_id: number;
   article_content_type: ArticleContentType.CODE;
   article_content_details: ArticleCodeContent
+}
+
+export interface ArticleComment {
+  commentId: number;
+  text: string;
+  articleId: number;
+  userId: number;
+}
+
+export interface ArticleCommentsSchema {
+  comment_id: number;
+  text: string;
+  article_id: number;
+  user_id: number,
+  username: string,
+  avatar?: string;
 }
 
 export const ContentTextAvjSchema = {

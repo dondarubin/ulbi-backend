@@ -16,21 +16,21 @@ class ProfileService {
     return {profile: profileDto}
   }
 
-  static async getProfileById(profile_id: number) {
-    const profileData = await ProfileRepository.getProfileById(profile_id)
+  static async getProfileById(user_id: number) {
+    const profileData = await ProfileRepository.getProfileById(user_id)
 
     if (!profileData) {
-      throw ApiError.BadRequest(`Profile with profile_id = '${profile_id}' not found!`)
+      throw ApiError.BadRequest(`Profile with user_id = '${user_id}' not found!`)
     }
 
     return profileData
   }
 
-  static async updateProfile(profile_id: number, profileFormData: ProfileSchema) {
-    const updatedProfileData = await ProfileRepository.updateProfile(profile_id, profileFormData)
+  static async updateProfile(user_id: number, profileFormData: ProfileSchema) {
+    const updatedProfileData = await ProfileRepository.updateProfile(user_id, profileFormData)
 
     if (!updatedProfileData) {
-      throw ApiError.BadRequest(`Profile with profile_id = '${profile_id}' not updated!`)
+      throw ApiError.BadRequest(`Profile with user_id = '${user_id}' not updated!`)
     }
 
     return updatedProfileData

@@ -121,15 +121,25 @@ export class Postgres implements IDatabase {
     `
   }
 
-  public async getProfileById(profile_id: number) {
+  public async getProfileById(user_id: number) {
     return this.database`
-        SELECT *
-        FROM profiles
-        WHERE profile_id = ${profile_id}
+        SELECT p.profile_id,
+               p.firstname,
+               p.lastname,
+               p.age,
+               p.currency,
+               p.country,
+               p.city,
+               p.username,
+               p.avatar
+        FROM Users u
+                 JOIN
+             Profiles p ON p.username = u.username
+        WHERE u.user_id = ${user_id}
     `
   }
 
-  public async updateProfile(profile_id: number, profileFormData: ProfileSchema) {
+  public async updateProfile(user_id: number, profileFormData: ProfileSchema) {
     return this.database`
         UPDATE profiles
         SET firstname = ${profileFormData.firstname || ''},
@@ -139,7 +149,8 @@ export class Postgres implements IDatabase {
             country   = ${profileFormData.country || ''},
             city      = ${profileFormData.city || ''},
             avatar    = ${profileFormData.avatar || ''}
-        WHERE profile_id = ${profile_id}
+        FROM users
+        WHERE users.username = profiles.username AND users.user_id = ${user_id}
         RETURNING *
     `
   }
@@ -200,6 +211,32 @@ export class Postgres implements IDatabase {
         SELECT article_content_details
         FROM articlecontents
         WHERE article_id = ${article_id}
+    `
+  }
+
+  public async getArticleComments(article_id: number) {
+    return this.database`
+        SELECT 
+            c.comment_id,
+            c.text,
+            c.article_id,
+            u.username,
+            u.user_id,
+            p.avatar
+        FROM comments c
+        JOIN users u on u.user_id = c.user_id
+        JOIN profiles p on u.username = p.username
+        WHERE article_id = ${article_id}
+    `
+  }
+
+  public async createArticleComments(articleId: number, userId: number, commentText: string) {
+    return this.database`
+        INSERT INTO comments (text, article_id, user_id)
+        VALUES (${commentText},
+                ${articleId},
+                ${userId})
+        RETURNING *
     `
   }
 }

@@ -12,9 +12,9 @@ class ProfileController {
 
   static async getProfile(req: Request, res: Response, next: NextFunction) {
     try {
-      const profile_id = Number(req.params.profileId);
+      const user_id = Number(req.params.userId);
 
-      const searchingProfile = await ProfileService.getProfileById(profile_id)
+      const searchingProfile = await ProfileService.getProfileById(user_id)
 
       return res.status(200).json(searchingProfile)
     } catch (err) {
@@ -24,10 +24,10 @@ class ProfileController {
 
   static async updateProfile(req: Request, res: Response, next: NextFunction) {
     try {
-      const profile_id = Number(req.params.profileId);
+      const user_id = Number(req.params.userId);
       const profileFormData: ProfileSchema = req.body;
 
-      const updatedProfile = await ProfileService.updateProfile(profile_id, profileFormData)
+      const updatedProfile = await ProfileService.updateProfile(user_id, profileFormData)
 
       return res.status(200).json(updatedProfile)
     } catch (err) {

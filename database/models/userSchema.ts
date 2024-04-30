@@ -3,3 +3,9 @@ export interface UserSchema {
   username: string
   hashed_password: string
 }
+
+export interface UserWithAvatarSchema {
+  user_id: number;
+  username: string;
+  avatar: string;
+}

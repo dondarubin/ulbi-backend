@@ -65,7 +65,7 @@ CREATE TABLE Articles
     subtitle   VARCHAR(100)   NOT NULL,
     img        VARCHAR(400)   NOT NULL,
     views      INT            NOT NULL DEFAULT 0,
-    createdAt  TIMESTAMP      NOT NULL DEFAULT now(),
+    created_at  TIMESTAMP      NOT NULL DEFAULT now(),
     type       ArticleTypes[] NOT NULL
 );
 
@@ -81,18 +81,10 @@ CREATE TABLE ArticleContents
     article_content_details TEXT                NOT NULL
 );
 
--- CREATE TABLE ArticleContents
--- (
---     article_content_id      SERIAL PRIMARY KEY,
---     article_id              INT                 NOT NULL REFERENCES Articles (article_id) ON DELETE CASCADE,
---     article_content_type    ArticleContentTypes NOT NULL,
---     article_content_details JSONB                NOT NULL
--- );
-
 CREATE TABLE Comments
 (
     comment_id SERIAL PRIMARY KEY,
     text       VARCHAR(500) NOT NULL,
     article_id INT          NOT NULL REFERENCES Articles (article_id) ON DELETE CASCADE,
-    user_id    INT          NOT NULL REFERENCES Users (user_id)
+    user_id    INT          NOT NULL REFERENCES Users (user_id) ON DELETE CASCADE
 );

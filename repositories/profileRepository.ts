@@ -7,8 +7,8 @@ class ProfileRepository{
     return response[0] as ProfileSchema
   }
 
-  static async getProfileById(profile_id: number){
-    const profileDataFromDB = await postgres.getProfileById(profile_id)
+  static async getProfileById(user_id: number) {
+    const profileDataFromDB = await postgres.getProfileById(user_id)
 
     if (!profileDataFromDB.length) {
       return null
@@ -16,12 +16,13 @@ class ProfileRepository{
     return profileDataFromDB[0] as ProfileSchema
   }
 
-  static async updateProfile(profile_id: number, profileFormData: ProfileSchema){
-    const updatedProfileDataFromDB = await postgres.updateProfile(profile_id, profileFormData)
+  static async updateProfile(user_id: number, profileFormData: ProfileSchema) {
+    const updatedProfileDataFromDB = await postgres.updateProfile(user_id, profileFormData)
 
     if (!updatedProfileDataFromDB.length) {
       return null
     }
+
     return updatedProfileDataFromDB[0] as ProfileSchema
   }
 }
