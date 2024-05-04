@@ -21,7 +21,7 @@ class ArticleService {
       throw ApiError.BadRequest(`User with user_id: ${article.user_id} not found!`)
     }
 
-    if (!article.title || !article.subtitle || !article.img || !article.type || !article.content) {
+    if (!article.title || !article.subtitle || !article.img || !article.type || !article.content || article.content.length === 0) {
       throw ApiError.BadRequest(`Article data isn't complete!`)
     }
 
@@ -97,6 +97,16 @@ class ArticleService {
     }
 
     return {article: articleDto}
+  }
+
+  static async getAllArticles() {
+    const articleData = await ArticleRepository.getAllArticles()
+
+    if (!articleData) {
+      throw ApiError.BadRequest(`Articles not found!`)
+    }
+
+    return articleData
   }
 
   static async getArticleById(articleId: number) {

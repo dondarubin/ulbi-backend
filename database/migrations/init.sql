@@ -57,21 +57,21 @@ CREATE TABLE Profiles
 --     avatar     VARCHAR(400) NOT NULL DEFAULT ''
 -- );
 
+CREATE TYPE ArticleTypes AS ENUM ('IT', 'Economy', 'Business');
+
+CREATE TYPE ArticleContentTypes AS ENUM ('TEXT', 'IMAGE', 'CODE');
+
 CREATE TABLE Articles
 (
     article_id SERIAL PRIMARY KEY,
     user_id    INT            NOT NULL REFERENCES Users (user_id),
     title      VARCHAR(100)   NOT NULL,
     subtitle   VARCHAR(100)   NOT NULL,
-    img        VARCHAR(400)   NOT NULL,
+    img        TEXT   NOT NULL,
     views      INT            NOT NULL DEFAULT 0,
     created_at  TIMESTAMP      NOT NULL DEFAULT now(),
     type       ArticleTypes[] NOT NULL
 );
-
-CREATE TYPE ArticleTypes AS ENUM ('IT', 'Economy', 'Business');
-
-CREATE TYPE ArticleContentTypes AS ENUM ('TEXT', 'IMAGE', 'CODE');
 
 CREATE TABLE ArticleContents
 (

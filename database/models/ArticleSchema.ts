@@ -39,26 +39,31 @@ export interface ArticleSchema {
   content: ArticleContent[]
 }
 
-export interface ArticleSchemaResponse extends ArticleSchema{
+export interface ArticleSchemaResponse extends ArticleSchema {
   article_id: number;
   created_at: string
 }
 
-export interface ArticleTextContentResponse{
+export interface ArticleSchemaWithAvatarResponse extends ArticleSchemaResponse {
+  avatar?: string;
+  username: string;
+}
+
+export interface ArticleTextContentResponse {
   article_content_id: number;
   article_id: number;
   article_content_type: ArticleContentType.TEXT;
   article_content_details: ArticleTextContent;
 }
 
-export interface ArticleImageContentResponse{
+export interface ArticleImageContentResponse {
   article_content_id: number;
   article_id: number;
   article_content_type: ArticleContentType.IMAGE;
   article_content_details: ArticleImageContent
 }
 
-export interface ArticleCodeContentResponse{
+export interface ArticleCodeContentResponse {
   article_content_id: number;
   article_id: number;
   article_content_type: ArticleContentType.CODE;

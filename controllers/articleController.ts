@@ -28,7 +28,17 @@ class ArticleController {
     }
   }
 
-  static async getArticle(req: Request, res: Response, next: NextFunction) {
+  static async getAllArticles(req: Request, res: Response, next: NextFunction) {
+    try {
+      const searchingArticles = await ArticleService.getAllArticles()
+
+      return res.status(200).json(searchingArticles)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  static async getArticleById(req: Request, res: Response, next: NextFunction) {
     try {
       const articleId = Number(req.params.articleId);
 

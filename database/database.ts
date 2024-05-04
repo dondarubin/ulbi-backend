@@ -206,6 +206,28 @@ export class Postgres implements IDatabase {
     `
   }
 
+  public async getAllArticles() {
+    return this.database`
+        SELECT
+            a.article_id,
+            a.user_id,
+            a.title,
+            a.subtitle,
+            a.img,
+            a.views,
+            a.created_at,
+            a.type,
+            u.username,
+            p.avatar
+        FROM
+            Articles a
+                INNER JOIN
+            Users u ON a.user_id = u.user_id
+                INNER JOIN
+            Profiles p ON u.username = p.username;
+    `
+  }
+
   public async getArticleContentById(article_id: number) {
     return this.database`
         SELECT article_content_details
@@ -214,6 +236,7 @@ export class Postgres implements IDatabase {
     `
   }
 
+  // COMMENT
   public async getArticleComments(article_id: number) {
     return this.database`
         SELECT 
