@@ -99,14 +99,14 @@ class ArticleService {
     return {article: articleDto}
   }
 
-  static async getAllArticles() {
-    const articleData = await ArticleRepository.getAllArticles()
+  static async getAllArticles(page: number, limit: number) {
+    let articleData = await ArticleRepository.getAllArticles(page, limit)
 
     if (!articleData) {
       throw ApiError.BadRequest(`Articles not found!`)
     }
 
-    return articleData
+    return {searchingArticles: articleData.articlesDataSummary, hasMore: articleData.hasMore}
   }
 
   static async getArticleById(articleId: number) {

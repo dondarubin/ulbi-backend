@@ -206,7 +206,7 @@ export class Postgres implements IDatabase {
     `
   }
 
-  public async getAllArticles() {
+  public async getAllArticles(limit: number, offset: number) {
     return this.database`
         SELECT
             a.article_id,
@@ -224,7 +224,9 @@ export class Postgres implements IDatabase {
                 INNER JOIN
             Users u ON a.user_id = u.user_id
                 INNER JOIN
-            Profiles p ON u.username = p.username;
+            Profiles p ON u.username = p.username
+        ORDER BY a.created_at DESC
+        LIMIT ${limit} OFFSET ${offset}
     `
   }
 

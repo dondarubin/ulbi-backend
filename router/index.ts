@@ -50,7 +50,7 @@ router.get('/profile/:userId', authMiddleware, ProfileController.getProfile)
 router.put('/profile/:userId', authMiddleware, ProfileController.updateProfile)
 
 router.post('/createArticle', ArticleController.createArticle)
-router.get('/articles', authMiddleware, ArticleController.getAllArticles)
+router.get('/articles', ArticleController.getAllArticles)
 router.get('/articles/:articleId', authMiddleware, ArticleController.getArticleById)
 
 router.post('/comments/:articleId', authMiddleware, ArticleController.createArticleComments)

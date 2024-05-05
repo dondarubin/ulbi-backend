@@ -30,9 +30,11 @@ class ArticleController {
 
   static async getAllArticles(req: Request, res: Response, next: NextFunction) {
     try {
-      const searchingArticles = await ArticleService.getAllArticles()
+      const limit = req.query.limit;
+      const page = req.query.page;
+      const {searchingArticles, hasMore} = await ArticleService.getAllArticles(Number(page), Number(limit))
 
-      return res.status(200).json(searchingArticles)
+      return res.status(200).json({searchingArticles, hasMore})
     } catch (err) {
       next(err)
     }

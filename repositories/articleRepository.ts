@@ -53,21 +53,26 @@ class ArticleRepository {
     return articleContentCodeResponse[0] as ArticleCodeContentResponse
   }
 
-  static async getAllArticles() {
-    const articleResponse = await postgres.getAllArticles()
+  static async getAllArticles(page: number, limit: number) {
+    const offset = (page - 1) * limit;
+    // получаем на 1 больше, чем лимит, чтобы понять последняя это страница или нет
+    const articleResponse = await postgres.getAllArticles(limit + 1, offset);
 
     if (!articleResponse.length) {
-      return null
+      return null;
     }
 
-    const articlesDataPromises = articleResponse.map(article =>
+    const hasMore = articleResponse.length > limit; // есть ли еще данные
+    const articlesToReturn = articleResponse.slice(0, limit); // возвращаем только требуемое количество статей
+
+    const articlesDataPromises = articlesToReturn.map(article =>
       collectArticleData(article as ArticleSchemaWithAvatarResponse)
     );
 
     const articlesDataSummary = (await Promise.all(articlesDataPromises))
     .filter(currentArticleData => currentArticleData !== null);
 
-    return articlesDataSummary
+    return {articlesDataSummary, hasMore}
   }
 
   static async getArticleById(articleId: number) {
