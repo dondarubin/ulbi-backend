@@ -29,34 +29,6 @@ CREATE TABLE Profiles
     avatar     TEXT        DEFAULT ''
 );
 
--- CREATE TABLE Profiles
--- (
---     profile_id SERIAL PRIMARY KEY,
---     user_id    INT UNIQUE  NOT NULL REFERENCES Users (user_id) ON DELETE CASCADE,
---     firstname  VARCHAR(50),
---     lastname   VARCHAR(50),
---     age        SMALLINT,
---     currency   VARCHAR(50),
---     country    VARCHAR(50),
---     city       VARCHAR(50),
---     username   VARCHAR(20) UNIQUE NOT NULL REFERENCES Users (username) ON DELETE CASCADE,
---     avatar     VARCHAR(400)
--- );
-
--- CREATE TABLE Profiles
--- (
---     profile_id SERIAL PRIMARY KEY,
---     user_id    INT UNIQUE  NOT NULL REFERENCES Users (user_id) ON DELETE CASCADE,
---     firstname  VARCHAR(50) NOT NULL DEFAULT '',
---     lastname   VARCHAR(50) NOT NULL DEFAULT '',
---     age        SMALLINT NOT NULL DEFAULT 0,
---     currency   VARCHAR(50) NOT NULL DEFAULT '',
---     country    VARCHAR(50) NOT NULL DEFAULT '',
---     city       VARCHAR(50) NOT NULL DEFAULT '',
---     username   VARCHAR(20) UNIQUE NOT NULL REFERENCES Users (username) ON DELETE CASCADE,
---     avatar     VARCHAR(400) NOT NULL DEFAULT ''
--- );
-
 CREATE TYPE ArticleTypes AS ENUM ('IT', 'Economy', 'Business');
 
 CREATE TYPE ArticleContentTypes AS ENUM ('TEXT', 'IMAGE', 'CODE');
@@ -67,9 +39,9 @@ CREATE TABLE Articles
     user_id    INT            NOT NULL REFERENCES Users (user_id),
     title      VARCHAR(100)   NOT NULL,
     subtitle   VARCHAR(100)   NOT NULL,
-    img        TEXT   NOT NULL,
+    img        TEXT           NOT NULL,
     views      INT            NOT NULL DEFAULT 0,
-    created_at  TIMESTAMP      NOT NULL DEFAULT now(),
+    created_at TIMESTAMP      NOT NULL DEFAULT now(),
     type       ArticleTypes[] NOT NULL
 );
 

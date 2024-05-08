@@ -27,6 +27,7 @@ export enum Country {
 }
 
 export enum ArticleType {
+  ALL = 'ALL',
   IT = 'IT',
   ECONOMY = 'Economy',
   BUSINESS = 'Business',

@@ -1,16 +1,21 @@
 import {postgres} from "../index";
 import {
   ArticleCodeContent,
-  ArticleCodeContentResponse, ArticleComment, ArticleCommentsSchema,
-  ArticleContent,
+  ArticleCodeContentResponse,
+  ArticleComment,
+  ArticleCommentsSchema,
   ArticleImageContent,
   ArticleImageContentResponse,
   ArticleSchema,
-  ArticleSchemaResponse, ArticleSchemaWithAvatarResponse,
+  ArticleSchemaResponse,
+  ArticleSchemaWithAvatarResponse,
+  ArticleSortField,
   ArticleTextContent,
-  ArticleTextContentResponse
+  ArticleTextContentResponse,
+  SortOrder
 } from "../database/models/ArticleSchema";
 import {collectArticleData} from "../utils/collectArticleData/collectArticleData";
+import {ArticleType} from "../const/constants";
 
 class ArticleRepository {
   static async createArticle(article: ArticleSchema) {
@@ -53,14 +58,26 @@ class ArticleRepository {
     return articleContentCodeResponse[0] as ArticleCodeContentResponse
   }
 
-  static async getAllArticles(page: number, limit: number) {
-    const offset = (page - 1) * limit;
-    // получаем на 1 больше, чем лимит, чтобы понять последняя это страница или нет
-    const articleResponse = await postgres.getAllArticles(limit + 1, offset);
-
-    if (!articleResponse.length) {
-      return null;
+  static async getAllArticles(
+    page: number,
+    limit: number,
+    sort: ArticleSortField,
+    order: SortOrder,
+    search: string,
+    type: string
+  ) {
+    if (!search) {
+      search = ""
     }
+
+    const offset = (page - 1) * limit;
+
+    // получаем на 1 больше, чем лимит, чтобы понять последняя это страница или нет
+    const articleResponse = await postgres.getAllArticles(limit + 1, offset, sort, order, search, type);
+
+    // if (!articleResponse.length) {
+    //   return [];
+    // }
 
     const hasMore = articleResponse.length > limit; // есть ли еще данные
     const articlesToReturn = articleResponse.slice(0, limit); // возвращаем только требуемое количество статей

@@ -141,3 +141,13 @@ export const ContentCodeAvjSchema = {
   additionalProperties: false
 }
 
+export enum SortOrder {
+  ASC = 'asc',
+  DESC = 'desc'
+}
+
+export enum ArticleSortField {
+  VIEWS = 'views',
+  TITLE = 'title',
+  CREATED = 'created_at'
+}

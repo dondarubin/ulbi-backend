@@ -1,22 +1,23 @@
 import {IEnvironmentService} from "../services/environmentService";
 import postgres, {Row, RowList} from "postgres";
-import {FingerprintResult} from "express-fingerprint";
 import {TokenSchema} from "./models/tokenSchema";
 import {ProfileSchema} from "./models/profileSchema";
-import {UserSchema} from "./models/userSchema";
 import {
   ArticleCodeContent,
-  ArticleContent,
   ArticleContentType,
   ArticleImageContent,
   ArticleSchema,
-  ArticleTextContent
+  ArticleSortField,
+  ArticleTextContent,
+  SortOrder
 } from "./models/ArticleSchema";
 import {ArticleType} from "../const/constants";
 
 interface IDatabase {
   createNewUser(username: string, password: string): Promise<RowList<Row[]>>,
+
   getUserDataByUsername(username: string): Promise<RowList<Row[]>>,
+
   // createRefreshSession(username: string): Promise<RowList<Row[]>>,
   // deleteRefreshSession(username: string): Promise<RowList<Row[]>>,
   // getTokenData(username: string): Promise<RowList<Row[]>>,
@@ -150,7 +151,8 @@ export class Postgres implements IDatabase {
             city      = ${profileFormData.city || ''},
             avatar    = ${profileFormData.avatar || ''}
         FROM users
-        WHERE users.username = profiles.username AND users.user_id = ${user_id}
+        WHERE users.username = profiles.username
+          AND users.user_id = ${user_id}
         RETURNING *
     `
   }
@@ -206,28 +208,62 @@ export class Postgres implements IDatabase {
     `
   }
 
-  public async getAllArticles(limit: number, offset: number) {
-    return this.database`
-        SELECT
-            a.article_id,
-            a.user_id,
-            a.title,
-            a.subtitle,
-            a.img,
-            a.views,
-            a.created_at,
-            a.type,
-            u.username,
-            p.avatar
-        FROM
-            Articles a
-                INNER JOIN
-            Users u ON a.user_id = u.user_id
-                INNER JOIN
-            Profiles p ON u.username = p.username
-        ORDER BY a.created_at DESC
-        LIMIT ${limit} OFFSET ${offset}
-    `
+  public async getAllArticles(
+    limit: number,
+    offset: number,
+    sort: ArticleSortField,
+    order: SortOrder,
+    search: string,
+    type: string
+  ) {
+    const searchFilter = `%${search}%`;
+    const orderDirection = order.toUpperCase()
+    const orderBy = sort === 'created_at' ? 'a.created_at' : (sort === 'views' ? 'a.views' : 'a.title');
+
+    if (type === ArticleType.ALL) {
+      return this.database`
+          SELECT a.article_id,
+                 a.user_id,
+                 a.title,
+                 a.subtitle,
+                 a.img,
+                 a.views,
+                 a.created_at,
+                 a.type,
+                 u.username,
+                 p.avatar
+          FROM Articles a
+                   INNER JOIN
+               Users u ON a.user_id = u.user_id
+                   INNER JOIN
+               Profiles p ON u.username = p.username
+          WHERE (a.title ILIKE ${searchFilter} OR a.subtitle ILIKE ${searchFilter})
+          ORDER BY ${this.database(orderBy)} ${this.database.unsafe(orderDirection)}
+          LIMIT ${limit} OFFSET ${offset}
+      `
+    } else {
+      return this.database`
+          SELECT a.article_id,
+                 a.user_id,
+                 a.title,
+                 a.subtitle,
+                 a.img,
+                 a.views,
+                 a.created_at,
+                 a.type,
+                 u.username,
+                 p.avatar
+          FROM Articles a
+                   INNER JOIN
+               Users u ON a.user_id = u.user_id
+                   INNER JOIN
+               Profiles p ON u.username = p.username
+          WHERE (a.title ILIKE ${searchFilter} OR a.subtitle ILIKE ${searchFilter})
+            AND ${type} = ANY (a.type)
+          ORDER BY ${this.database(orderBy)} ${this.database.unsafe(orderDirection)}
+          LIMIT ${limit} OFFSET ${offset}
+      `
+    }
   }
 
   public async getArticleContentById(article_id: number) {
@@ -241,16 +277,15 @@ export class Postgres implements IDatabase {
   // COMMENT
   public async getArticleComments(article_id: number) {
     return this.database`
-        SELECT 
-            c.comment_id,
-            c.text,
-            c.article_id,
-            u.username,
-            u.user_id,
-            p.avatar
+        SELECT c.comment_id,
+               c.text,
+               c.article_id,
+               u.username,
+               u.user_id,
+               p.avatar
         FROM comments c
-        JOIN users u on u.user_id = c.user_id
-        JOIN profiles p on u.username = p.username
+                 JOIN users u on u.user_id = c.user_id
+                 JOIN profiles p on u.username = p.username
         WHERE article_id = ${article_id}
     `
   }

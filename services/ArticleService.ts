@@ -1,10 +1,10 @@
 import ApiError from "../exceptions/errors";
 import {
   ArticleContentType,
-  ArticleSchema,
+  ArticleSchema, ArticleSortField,
   ContentCodeAvjSchema,
   ContentImageAvjSchema,
-  ContentTextAvjSchema
+  ContentTextAvjSchema, SortOrder
 } from "../database/models/ArticleSchema";
 import ArticleRepository from "../repositories/articleRepository";
 import {ArticleType} from "../const/constants";
@@ -99,12 +99,19 @@ class ArticleService {
     return {article: articleDto}
   }
 
-  static async getAllArticles(page: number, limit: number) {
-    let articleData = await ArticleRepository.getAllArticles(page, limit)
+  static async getAllArticles(
+    page: number,
+    limit: number,
+    sort: ArticleSortField,
+    order: SortOrder,
+    search: string,
+    type: string
+  ) {
+    const articleData = await ArticleRepository.getAllArticles(page, limit, sort, order, search, type)
 
-    if (!articleData) {
-      throw ApiError.BadRequest(`Articles not found!`)
-    }
+    // if (!articleData) {
+    //   throw ApiError.BadRequest(`Articles not found!`)
+    // }
 
     return {searchingArticles: articleData.articlesDataSummary, hasMore: articleData.hasMore}
   }

@@ -1,5 +1,9 @@
 import {NextFunction, Request, Response} from "express";
 import ArticleService from "../services/ArticleService";
+import {isValidFilterOptions} from "../utils/validateFilterOptions/validateFilterOptions";
+import {ArticleSortField, SortOrder} from "../database/models/ArticleSchema";
+import ApiError from "../exceptions/errors";
+import {ArticleType} from "../const/constants";
 
 class ArticleController {
   static async createArticle(req: Request, res: Response, next: NextFunction) {
@@ -30,9 +34,26 @@ class ArticleController {
 
   static async getAllArticles(req: Request, res: Response, next: NextFunction) {
     try {
-      const limit = req.query.limit;
-      const page = req.query.page;
-      const {searchingArticles, hasMore} = await ArticleService.getAllArticles(Number(page), Number(limit))
+      const { page, limit, sort, order, search = "", type } = req.query;
+      const isValidSort = isValidFilterOptions(sort, ArticleSortField)
+      const isValidOrder = isValidFilterOptions(order, SortOrder)
+      const isValidType = isValidFilterOptions(type, ArticleType)
+
+      if (!isValidSort || !isValidOrder || !isValidType){
+        throw ApiError.BadRequest(`Filter options is incorrect!`)
+      }
+
+      const {
+        searchingArticles,
+        hasMore
+      } = await ArticleService.getAllArticles(
+        Number(page),
+        Number(limit),
+        sort,
+        order,
+        String(search),
+        type
+      )
 
       return res.status(200).json({searchingArticles, hasMore})
     } catch (err) {
