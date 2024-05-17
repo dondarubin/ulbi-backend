@@ -113,9 +113,9 @@ class ArticleRepository {
   static async getArticleComments(article_id: number) {
     const articleCommentsResponse = await postgres.getArticleComments(article_id)
 
-    if (!articleCommentsResponse.length) {
-      return null
-    }
+    // if (!articleCommentsResponse.length) {
+    //   return null
+    // }
 
     const summary: ArticleCommentsSchema[] = []
 

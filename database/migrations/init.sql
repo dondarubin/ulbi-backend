@@ -1,9 +1,11 @@
+CREATE TYPE UserRoles AS ENUM ('USER', 'ADMIN', 'MANAGER');
+
 CREATE TABLE Users
 (
     user_id         SERIAL PRIMARY KEY,
     username        VARCHAR(20) UNIQUE NOT NULL,
     hashed_password VARCHAR(100)       NOT NULL,
---     role      SMALLINT           NOT NULL,
+    roles           UserRoles[]        NOT NULL DEFAULT ARRAY ['USER']::UserRoles[],
     timestamp       TIMESTAMP          NOT NULL DEFAULT now() -- Should not be set manually
 );
 
@@ -16,6 +18,10 @@ CREATE TABLE Tokens
     timestamp     TIMESTAMP    NOT NULL DEFAULT now() -- Should not be set manually
 );
 
+-- TODO сделать такие типы и настроить добавление в таблицу по этим типам
+-- CREATE TYPE ProfileCountryTypes AS ENUM ('IT', 'Economy', 'Business');
+-- CREATE TYPE ProfileCurrencyTypes AS ENUM ('IT', 'Economy', 'Business');
+
 CREATE TABLE Profiles
 (
     profile_id SERIAL PRIMARY KEY,
@@ -23,7 +29,7 @@ CREATE TABLE Profiles
     lastname   VARCHAR(50) DEFAULT '',
     age        SMALLINT    DEFAULT 0,
     currency   VARCHAR(5)  DEFAULT 'USD',
-    country    VARCHAR(15) DEFAULT 'United States',
+    country    VARCHAR(50) DEFAULT 'United States',
     city       VARCHAR(50) DEFAULT '',
     username   VARCHAR(20) UNIQUE NOT NULL REFERENCES Users (username) ON DELETE CASCADE,
     avatar     TEXT        DEFAULT ''
@@ -36,7 +42,7 @@ CREATE TYPE ArticleContentTypes AS ENUM ('TEXT', 'IMAGE', 'CODE');
 CREATE TABLE Articles
 (
     article_id SERIAL PRIMARY KEY,
-    user_id    INT            NOT NULL REFERENCES Users (user_id),
+    user_id    INT            NOT NULL REFERENCES Users (user_id) ON DELETE CASCADE,
     title      VARCHAR(100)   NOT NULL,
     subtitle   VARCHAR(100)   NOT NULL,
     img        TEXT           NOT NULL,

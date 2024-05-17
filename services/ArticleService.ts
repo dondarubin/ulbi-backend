@@ -129,9 +129,9 @@ class ArticleService {
   static async getArticleComments(articleId: number) {
     const articleCommentsData = await ArticleRepository.getArticleComments(articleId)
 
-    if (!articleCommentsData) {
-      throw ApiError.BadRequest(`Article comments with article_id = '${articleId}' not found!`)
-    }
+    // if (!articleCommentsData) {
+    //   throw ApiError.BadRequest(`Article comments with article_id = '${articleId}' not found!`)
+    // }
 
     return articleCommentsData
   }
