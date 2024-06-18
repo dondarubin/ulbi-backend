@@ -12,10 +12,10 @@ CREATE TABLE Users
 CREATE TABLE Tokens
 (
     token_id      SERIAL PRIMARY KEY,
-    user_id       INT UNIQUE   NOT NULL REFERENCES Users (user_id) ON DELETE CASCADE,
-    refresh_token VARCHAR(400) NOT NULL,
-    finger_print  VARCHAR(50)  NOT NULL,
-    timestamp     TIMESTAMP    NOT NULL DEFAULT now() -- Should not be set manually
+    user_id       SERIAL UNIQUE NOT NULL REFERENCES Users (user_id) ON DELETE CASCADE,
+    refresh_token VARCHAR(400)  NOT NULL,
+    finger_print  VARCHAR(50)   NOT NULL,
+    timestamp     TIMESTAMP     NOT NULL DEFAULT now() -- Should not be set manually
 );
 
 -- TODO сделать такие типы и настроить добавление в таблицу по этим типам
@@ -42,7 +42,7 @@ CREATE TYPE ArticleContentTypes AS ENUM ('TEXT', 'IMAGE', 'CODE');
 CREATE TABLE Articles
 (
     article_id SERIAL PRIMARY KEY,
-    user_id    INT            NOT NULL REFERENCES Users (user_id) ON DELETE CASCADE,
+    user_id    SERIAL         NOT NULL REFERENCES Users (user_id) ON DELETE CASCADE,
     title      VARCHAR(100)   NOT NULL,
     subtitle   VARCHAR(100)   NOT NULL,
     img        TEXT           NOT NULL,
@@ -54,15 +54,27 @@ CREATE TABLE Articles
 CREATE TABLE ArticleContents
 (
     article_content_id      SERIAL PRIMARY KEY,
-    article_id              INT                 NOT NULL REFERENCES Articles (article_id) ON DELETE CASCADE,
+    article_id              SERIAL              NOT NULL REFERENCES Articles (article_id) ON DELETE CASCADE,
     article_content_type    ArticleContentTypes NOT NULL,
-    article_content_details TEXT                NOT NULL
+    article_content_details TEXT                NOT NULL,
+    created_at              TIMESTAMP           NOT NULL DEFAULT now()
 );
 
 CREATE TABLE Comments
 (
     comment_id SERIAL PRIMARY KEY,
     text       VARCHAR(500) NOT NULL,
-    article_id INT          NOT NULL REFERENCES Articles (article_id) ON DELETE CASCADE,
-    user_id    INT          NOT NULL REFERENCES Users (user_id) ON DELETE CASCADE
+    article_id SERIAL       NOT NULL REFERENCES Articles (article_id) ON DELETE CASCADE,
+    user_id    SERIAL       NOT NULL REFERENCES Users (user_id) ON DELETE CASCADE
 );
+
+CREATE TYPE ResponseRole AS ENUM ('user', 'assistant', 'system', 'tool');
+
+CREATE TABLE GptHistory
+(
+    response_id SERIAL PRIMARY KEY,
+    user_id     SERIAL       NOT NULL REFERENCES Users (user_id),
+    role        ResponseRole NOT NULL,
+    content     TEXT         NOT NULL,
+    created_at  TIMESTAMP    NOT NULL DEFAULT now()
+)

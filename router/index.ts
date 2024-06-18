@@ -4,6 +4,7 @@ import {body} from "express-validator";
 import {authMiddleware} from "../middlewares/authMiddleware";
 import ProfileController from "../controllers/profileController";
 import ArticleController from "../controllers/articleController";
+import GptController from "../controllers/gptController";
 
 export const router = express.Router();
 router.post('/register',
@@ -55,3 +56,6 @@ router.get('/articles/:articleId', authMiddleware, ArticleController.getArticleB
 
 router.post('/comments/:articleId', authMiddleware, ArticleController.createArticleComments)
 router.get('/comments/:articleId', authMiddleware, ArticleController.getArticleComments)
+
+router.post('/askGpt', GptController.askGpt)
+router.get('/getGptHistory/:userId', GptController.getGptHistory)

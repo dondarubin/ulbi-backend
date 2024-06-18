@@ -12,6 +12,8 @@ import {
   SortOrder
 } from "./models/ArticleSchema";
 import {ArticleType} from "../const/constants";
+import {GptRole, Message} from "./models/GptSchema";
+import {ChatCompletionMessageParam} from "openai/src/resources/chat/completions";
 
 interface IDatabase {
   createNewUser(username: string, password: string): Promise<RowList<Row[]>>,
@@ -271,6 +273,7 @@ export class Postgres implements IDatabase {
         SELECT article_content_details
         FROM articlecontents
         WHERE article_id = ${article_id}
+        ORDER BY created_at
     `
   }
 
@@ -299,6 +302,36 @@ export class Postgres implements IDatabase {
         RETURNING *
     `
   }
+
+  //   GPT
+  public async getGptUserHistory(user_id: number) {
+    return this.database`
+        SELECT *
+        FROM gpthistory
+        WHERE user_id = ${user_id}
+        ORDER BY created_at
+    `
+  }
+
+  public async addValueToGptHistory(user_id: number, message: ChatCompletionMessageParam) {
+    return this.database`
+        INSERT INTO gpthistory (user_id, role, content)
+        VALUES (${user_id},
+                ${message.role},
+                ${JSON.stringify(message.content)})
+        RETURNING *
+    `
+  }
+
+  // public async addValueToGptHistory(data: requestGptData) {
+  //   return this.database`
+  //       INSERT INTO gpthistory (user_id, role, content)
+  //       VALUES (${data.user_id},
+  //               ${data.role},
+  //               ${data.content})
+  //       RETURNING *
+  //   `
+  // }
 }
 
 

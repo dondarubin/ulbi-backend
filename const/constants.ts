@@ -92,3 +92,66 @@ const testArticleContent: ArticleSchema = {
     }
   ]
 }
+
+// {
+//   "title": "Javascript для начинающих.",
+//   "subtitle": "Обзор: Первые шаги в Javascript",
+//   "img": "https://teknotower.com/wp-content/uploads/2020/11/js.png",
+//   "user_id": 1,
+//   "views":1002,
+//   "type": ["IT"],
+//   "content": [
+//   {
+//     "type": "TEXT",
+//     "title": "Определение высокого уровня",
+//     "paragraphs": [
+//       "JavaScript это язык, который позволяет вам применять сложные вещи на web странице — каждый раз, когда на web странице происходит что-то большее, чем просто её статичное отображение — отображение периодически обновляемого контента, или интерактивных карт, или анимация 2D/3D графики, или прокрутка видео в проигрывателе, и т.д. — можете быть уверены, что скорее всего, не обошлось без JavaScript. Это третий слой слоёного пирога стандартных web технологий, два из которых (HTML и CSS) мы детально раскрыли в других частях учебного пособия."
+//     ]
+//   },
+//   {
+//     "type": "IMAGE",
+//     "imageUrl": "https://developer.mozilla.org/ru/docs/Learn/JavaScript/First_steps/What_is_JavaScript/cake.png",
+//     "imageCaption": "Рисунок 1 - пирог web технологий"
+//   },
+//   {
+//     "type": "TEXT",
+//     "paragraphs": [
+//       "Три слоя прекрасно выстраиваются друг над другом. Для примера примера возьмём кнопку. Чтобы задать структуру, создадим разметку с помощью HTML:"
+//     ]
+//   },
+//   {
+//     "type": "CODE",
+//     "code": "<button type=\"button\">Player 1: Chris</button>"
+//   },
+//   {
+//     "type": "IMAGE",
+//     "imageUrl": "https://developer.mozilla.org/ru/docs/Learn/JavaScript/First_steps/What_is_JavaScript/just-html.png",
+//     "imageCaption": "Рисунок 2 - кнопка на сайте"
+//   },
+//   {
+//     "type": "TEXT",
+//     "paragraphs": [
+//       "Затем добавим немного CSS, чтобы кнопка выглядела симпатичнее:"
+//     ]
+//   },
+//   {
+//     "type": "CODE",
+//     "code": "button {\n\tfont-family: \"helvetica neue\", helvetica, sans-serif;\n\tletter-spacing: 1px;\n\ttext-transform: uppercase;\n\tborder: 2px solid rgb(200 200 0 / 0.6);\n\tbackground-color: rgb(0 217 217 / 0.6);\n\tcolor: rgb(100 0 0 / 1);\n\tbox-shadow: 1px 1px 2px rgb(0 0 200 / 0.4);\n\tborder-radius: 10px;\n\tpadding: 3px 10px;\n\tcursor: pointer;\n}"
+//   },
+//   {
+//     "type": "IMAGE",
+//     "imageUrl": "https://developer.mozilla.org/ru/docs/Learn/JavaScript/First_steps/What_is_JavaScript/html-and-css.png",
+//     "imageCaption": "Рисунок 3 - стили кнопки"
+//   },
+//   {
+//     "type": "TEXT",
+//     "paragraphs": [
+//       "И наконец добавим немного JavaScript для реализации динамического поведения:"
+//     ]
+//   },
+//   {
+//     "type": "CODE",
+//     "code": "const button = document.querySelector(\"button\");\n\nbutton.addEventListener(\"click\", updateName);\n\nfunction updateName() {\n\tconst name = prompt(\"Enter a new name\");\n\tbutton.textContent = `Player 1: ${name}`;\n}"
+//   }
+// ]
+// }

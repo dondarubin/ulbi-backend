@@ -7,10 +7,15 @@ import {router} from "./router";
 import Fingerprint from "express-fingerprint";
 import {errorMiddleware} from "./middlewares/errorMiddleware";
 import Ajv from "ajv"
+import OpenAI from "openai";
 
 export const environmentService = new EnvironmentService();
 export const postgres = new Postgres(environmentService);
 export const ajv = new Ajv();
+export const openai = new OpenAI({
+  baseURL: environmentService.get("OPEN_ROUTER_BASE_URL"),
+  apiKey: environmentService.get("OPEN_ROUTER_KEY"),
+})
 const app = express()
 
 app.use(express.json())

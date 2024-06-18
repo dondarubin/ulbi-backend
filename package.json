@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "dev": "nodemon index.ts",
-    "dev:doc": "concurrently \"nodemon index.ts\" \"docker start 588189f51dfb\""
+    "dev:doc": "concurrently \"nodemon index.ts\" \"docker start 35f9cfedca05\""
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,7 @@
     "express-fingerprint": "^1.2.2",
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
+    "openai": "^4.47.1",
     "postgres": "^3.4.3"
   },
   "devDependencies": {
