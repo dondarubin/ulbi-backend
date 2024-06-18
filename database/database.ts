@@ -12,7 +12,6 @@ import {
   SortOrder
 } from "./models/ArticleSchema";
 import {ArticleType} from "../const/constants";
-import {GptRole, Message} from "./models/GptSchema";
 import {ChatCompletionMessageParam} from "openai/src/resources/chat/completions";
 
 interface IDatabase {
@@ -332,6 +331,16 @@ export class Postgres implements IDatabase {
   //       RETURNING *
   //   `
   // }
+
+  // Notifications
+  public async getNotifications(user_id: number) {
+    return this.database`
+        SELECT *
+        FROM notifications
+        WHERE user_id = ${user_id}
+        ORDER BY notification_id
+    `
+  }
 }
 
 

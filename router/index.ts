@@ -5,6 +5,7 @@ import {authMiddleware} from "../middlewares/authMiddleware";
 import ProfileController from "../controllers/profileController";
 import ArticleController from "../controllers/articleController";
 import GptController from "../controllers/gptController";
+import NotificationController from "../controllers/notificationController";
 
 export const router = express.Router();
 router.post('/register',
@@ -59,3 +60,5 @@ router.get('/comments/:articleId', authMiddleware, ArticleController.getArticleC
 
 router.post('/askGpt', GptController.askGpt)
 router.get('/getGptHistory/:userId', GptController.getGptHistory)
+
+router.get('/notifications/:userId', NotificationController.getNotifications)

@@ -77,4 +77,13 @@ CREATE TABLE GptHistory
     role        ResponseRole NOT NULL,
     content     TEXT         NOT NULL,
     created_at  TIMESTAMP    NOT NULL DEFAULT now()
+);
+
+CREATE TABLE Notifications
+(
+    notification_id SERIAL PRIMARY KEY,
+    user_id         SERIAL NOT NULL REFERENCES Users (user_id),
+    title           TEXT   NOT NULL,
+    description     TEXT   NOT NULL,
+    href            TEXT
 )
