@@ -276,6 +276,25 @@ export class Postgres implements IDatabase {
     `
   }
 
+  public async getArticleRating(article_id: number, user_id: number) {
+    return this.database`
+        SELECT *
+        FROM articlerating
+        WHERE article_id = ${article_id} AND user_id = ${user_id}
+    `
+  }
+
+  public async rateArticle(article_id: number, user_id: number, rate: number, feedback?: string) {
+    return this.database`
+       INSERT INTO articlerating (user_id, article_id, rate, feedback) 
+       VALUES (${user_id},
+               ${article_id},
+               ${rate},
+               ${feedback ?? null})
+       RETURNING *
+    `
+  }
+
   // COMMENT
   public async getArticleComments(article_id: number) {
     return this.database`

@@ -151,6 +151,26 @@ class ArticleService {
 
     return {articleComment: articleCommentsData}
   }
+
+  static async getArticleRating(articleId: number, userId: number) {
+    const articleRating = await ArticleRepository.getArticleRating(articleId, userId);
+
+    if (!articleRating) {
+      throw ApiError.BadRequest(`Article Rating with article_id = '${articleId}' and user_id = '${userId}' not found!`)
+    }
+
+    return articleRating
+  }
+
+  static async rateArticle(articleId: number, userId: number, rate: number, feedback?: string) {
+    const rateArticle = await ArticleRepository.rateArticle(articleId, userId, rate, feedback);
+
+    if (!rateArticle) {
+      throw ApiError.BadRequest(`Rate Article with article_id = '${articleId}' error!`)
+    }
+
+    return rateArticle
+  }
 }
 
 export default ArticleService

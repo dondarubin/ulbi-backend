@@ -151,3 +151,11 @@ export enum ArticleSortField {
   TITLE = 'title',
   CREATED = 'created_at'
 }
+
+export interface ArticleRating {
+  rating_id: number;
+  user_id: number;
+  article_id: number;
+  rate: number;
+  feedback?: string;
+}

@@ -99,6 +99,39 @@ class ArticleController {
       next(err)
     }
   }
+
+  static async getArticleRating(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId, articleId } = req.query;
+
+      const articleRating = await ArticleService.getArticleRating(Number(articleId), Number(userId))
+
+      console.log(articleRating)
+
+      return res.status(200).json(articleRating)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  static async rateArticle(req: Request, res: Response, next: NextFunction) {
+    try {
+      const {
+        userId,
+        articleId,
+        rate,
+        feedback
+      } = req.body
+
+      const rateArticle = await ArticleService.rateArticle(Number(articleId), Number(userId), Number(rate), feedback)
+
+      console.log(rateArticle)
+
+      return res.status(200).json(rateArticle)
+    } catch (err) {
+      next(err)
+    }
+  }
 }
 
 export default ArticleController;

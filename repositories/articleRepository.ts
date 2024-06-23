@@ -5,7 +5,7 @@ import {
   ArticleComment,
   ArticleCommentsSchema,
   ArticleImageContent,
-  ArticleImageContentResponse,
+  ArticleImageContentResponse, ArticleRating,
   ArticleSchema,
   ArticleSchemaResponse,
   ArticleSchemaWithAvatarResponse,
@@ -134,6 +134,26 @@ class ArticleRepository {
     }
 
     return articleCommentsResponse[0] as ArticleComment
+  }
+
+  static async getArticleRating(articleId: number, userId: number) {
+    const articleRatingResponse = await postgres.getArticleRating(articleId, userId)
+
+    if (!articleRatingResponse.length) {
+      return null
+    }
+
+    return articleRatingResponse[0] as ArticleRating
+  }
+
+  static async rateArticle(articleId: number, userId: number, rate: number, feedback?: string) {
+    const rateArticleResponse = await postgres.rateArticle(articleId, userId, rate, feedback)
+
+    if (!rateArticleResponse.length) {
+      return null
+    }
+
+    return rateArticleResponse[0] as ArticleRating
   }
 }
 

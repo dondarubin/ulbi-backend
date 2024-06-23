@@ -86,4 +86,13 @@ CREATE TABLE Notifications
     title           TEXT   NOT NULL,
     description     TEXT   NOT NULL,
     href            TEXT
-)
+);
+
+CREATE TABLE ArticleRating
+(
+    rating_id  SERIAL PRIMARY KEY,
+    user_id    SERIAL   NOT NULL UNIQUE REFERENCES Users (user_id),
+    article_id SERIAL   NOT NULL UNIQUE REFERENCES Articles (article_id),
+    rate       SMALLINT NOT NULL CHECK (rate BETWEEN 1 AND 5),
+    feedback   TEXT
+);

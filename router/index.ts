@@ -51,14 +51,17 @@ router.get('/refresh', UserController.refresh)
 router.get('/profile/:userId', authMiddleware, ProfileController.getProfile)
 router.put('/profile/:userId', authMiddleware, ProfileController.updateProfile)
 
-router.post('/createArticle', ArticleController.createArticle)
-router.get('/articles', ArticleController.getAllArticles)
-router.get('/articles/:articleId', authMiddleware, ArticleController.getArticleById)
+router.post('/createArticle', authMiddleware, ArticleController.createArticle)
+router.get('/articles', authMiddleware, ArticleController.getAllArticles)
+router.get('/articles/:articleId', ArticleController.getArticleById)
+
+router.post('/article/rating',  ArticleController.rateArticle)
+router.get('/article/rating',  ArticleController.getArticleRating)
 
 router.post('/comments/:articleId', authMiddleware, ArticleController.createArticleComments)
 router.get('/comments/:articleId', authMiddleware, ArticleController.getArticleComments)
 
-router.post('/askGpt', GptController.askGpt)
-router.get('/getGptHistory/:userId', GptController.getGptHistory)
+router.post('/askGpt', authMiddleware, GptController.askGpt)
+router.get('/getGptHistory/:userId', authMiddleware, GptController.getGptHistory)
 
-router.get('/notifications/:userId', NotificationController.getNotifications)
+router.get('/notifications/:userId', authMiddleware, NotificationController.getNotifications)
